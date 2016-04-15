@@ -1,5 +1,15 @@
-# datelife-web
+# datelifeweb
 Contains the code for running the datelife website.
+
+To start the server:
+
+```
+library(opencpu)
+opencpu$browse("library/datelifeweb/www")
+```
+
+
+
 
 Old install code:
 
