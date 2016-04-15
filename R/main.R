@@ -8,7 +8,8 @@ hello <- function (myname = "")
 
 GetAllCitations <- function() {
   data(datelife::opentree_chronograms)
-  return(list(message=names(datelife.cache$trees)))
+  publications <- paste('<ul>', paste('<li>',names(datelife.cache$trees), '</li>', sep="", collapse=""), '</ul>', sep="")
+  return(list(message=publications))
 }
 
 run <- function(...) {
