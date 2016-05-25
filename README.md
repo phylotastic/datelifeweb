@@ -42,6 +42,14 @@ Nyakatura, Katrin, Olaf RP Bininda-Emonds. 2012. Updating the evolutionary histo
 ```
 
 
+We also have a test version running with opencpu using github hooks:
+
+```
+https://phylotastic.ocpu.io/datelifeweb
+```
+
+This is ONLY for testing. Do not use for real analysis.
+
 Old install code:
 
 To have new code actually run on the server, you have to copy it to the proper directory and then re-launch Rserve. To do this from the datelife directory with R, it's
