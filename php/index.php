@@ -2,9 +2,9 @@
 <?php include("pagestart.html"); ?>
 <p>This will give the age of the most recent common ancestor of a set of taxa, or stretch an input tree, based on available time-calibrated trees. It is still actively in development, so it may break at times. Currently it mostly has mammals in the database, but we are actively adding taxa. See the <a href="http://datelife.org/faq.php">FAQ</a> page for more info on this project, and the <a href="http://phylotastic.org">Phylotastic</a> page for more info. This was started at a NESCent hackathon, added to at others, and eventually NSF-funded as part of Phylotastic.</p>
  <p><form action = "http://datelife.org/cgi-bin/R/result" method="get">
- <p>Use the syntax <code>Genus_species,Genus_species</code>: comma-delimited, no spaces, underscores in names, i.e., <br /><b>Rhinoceros_unicornis,Equus_caballus,Mus_musculus</b><br />for a list of species in the taxa box, <b>OR</b> a Newick tree string, ending with a semicolon: <br /><b>((Rhinoceros_unicornis,Equus_caballus),Mus_musculus);</b><br />The tree can have branch lengths. Note that stretching a tree is much slower than just getting ages for a list of taxa. It uses a method by <a href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12051/abstract">Eastman et al. 2013</a></p>
+ <p>Use the syntax <code>Genus species,Genus species</code>: comma-delimited, spaces in names, i.e., <br /><b>Rhinoceros unicornis,Equus caballus,Mus musculus</b><br />for a list of species in the taxa box, <b>OR</b> a Newick tree string, ending with a semicolon, with underscores: <br /><b>((Rhinoceros_unicornis,Equus_caballus),Mus_musculus);</b><br />The tree can have branch lengths. Note that stretching a tree is much slower than just getting ages for a list of taxa. It uses a method by <a href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12051/abstract">Eastman et al. 2013</a></p>
  <p>Input: <input type="text" name="input" value="" size="80"></p>
- 
+
  <p>Return format: <select name="format">
  <option value="html">HTML</option>
  <option value="newickmed">Newick median</option>
@@ -24,14 +24,14 @@
  </select></p>
 
  <p>How to deal with single point estimates (which have no uncertainty): <select name="uncertainty">
- <option value="100">Assume +/- 100% of the age</option> 
- <option value="75">Assume +/- 75% of the age</option> 
- <option value="50">Assume +/- 50% of the age</option> 
- <option value="20">Assume +/- 20% of the age</option> 
- <option value="10">Assume +/- 10% of the age</option> 
- <option value="5">Assume +/- 5% of the age</option> 
- <option value="1">Assume +/- 1% of the age</option> 
- <option value="0">Assume +/- 0% of the age</option> 
+ <option value="100">Assume +/- 100% of the age</option>
+ <option value="75">Assume +/- 75% of the age</option>
+ <option value="50">Assume +/- 50% of the age</option>
+ <option value="20">Assume +/- 20% of the age</option>
+ <option value="10">Assume +/- 10% of the age</option>
+ <option value="5">Assume +/- 5% of the age</option>
+ <option value="1">Assume +/- 1% of the age</option>
+ <option value="0">Assume +/- 0% of the age</option>
 </select></p>
 
 <p>Taxonomic name resolution (converting input names to a standard taxonomy; will slow down analysis (~0.5s/taxon) but increase chance of matching): <select name="usetnrs">
