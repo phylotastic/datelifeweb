@@ -4,7 +4,7 @@ Contains the code for running the datelife website.
 To test (you need to have a recent version of `devtools` installed in R):
 
 ```
-install_github("phylotastic/datelifeweb")
+devtools::install_github("phylotastic/datelifeweb")
 ```
 
 To start the server:
