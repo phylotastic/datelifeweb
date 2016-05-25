@@ -1,8 +1,8 @@
 Package: datelifeweb
 Type: DateLife Website
 Title: Web interface for DateLife
-Version: 0.1
-Date: 2015-04-14
+Version: 0.2
+Date: 2016-05-25
 Author: Brian O'Meara
 Maintainer: Brian O'Meara <omeara.brian@gmail.com>
 Description: datelifeweb
@@ -10,3 +10,5 @@ License: GPL2
 Depends:
     datelife,
     opencpu
+LazyData: true
+RoxygenNote: 5.0.1
