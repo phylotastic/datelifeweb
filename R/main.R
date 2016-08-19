@@ -3,7 +3,7 @@
 #' @export
 GetAllCitations <- function() {
   data(datelife::opentree_chronograms)
-  publication.strings <- sort(unique(paste("<li>", names(datelife.cache$trees), "<a href='",datelife.cache$dois, "'>",datelife.cache$dois, "</a></li>", sep="")))
+  publication.strings <- sort(unique(paste("<li>", names(datelife.cache$trees), " <a href='",datelife.cache$dois, "'>",datelife.cache$dois, "</a></li>", sep="")))
 
   publications <- paste('<ul>', publication.strings,  '</ul>', sep="", collapse="")
   return(list(message=publications))
