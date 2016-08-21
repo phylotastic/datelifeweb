@@ -45,7 +45,9 @@ $(document).ready(function(){
       usetnrsfield: usetnrsfield,
       approximatematchfield: approximatematchfield
     }, function(output){
-      $("#output").text(output.message);
+      $("#output").text("");
+
+      $("#output").append(output.message);
     });
 
     //if R returns an error, alert the error message

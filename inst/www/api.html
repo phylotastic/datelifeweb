@@ -58,15 +58,18 @@
     			<div class="contentarea">
 <h2>API</h2>
 
-There are three ways to use DateLife. One is to use the <a href="http://www.datelife.org">datelife.org</a> website. Another is to use the datelife R package. The third is to use HTTP POST and GET requests. This page documents that.
+<br />There are three ways to use DateLife. One is to use the <a href="http://www.datelife.org">datelife.org</a> website. Another is to use the datelife R package. The third is to use HTTP POST and GET requests. This page documents that.
 
-The API is based on that of of the <a href="https://www.opencpu.org">OpenCPU project</a>: see this <a href="http://jeroenooms.github.io/opencpu-manual/opencpu-server.pdf">PDF</a> for more info.
+<br />The API is based on that of of the <a href="https://www.opencpu.org">OpenCPU project</a>: see this <a href="http://jeroenooms.github.io/opencpu-manual/opencpu-server.pdf">PDF</a> for more info.
 
-[Change URL when deployed live]
-curl http://localhost:4361/ocpu/library/datelifeweb/R/GetAllCitations/ -d ""
+<br />[Change URL when deployed live]
+
+
+<pre>curl http://localhost:4361/ocpu/library/datelifeweb/R/GetAllCitations/ -d ""</pre>
 
 returns
 
+<pre>
 /ocpu/tmp/x0cf1b948fb/R/.val
 /ocpu/tmp/x0cf1b948fb/stdout
 /ocpu/tmp/x0cf1b948fb/warnings
@@ -74,10 +77,11 @@ returns
 /ocpu/tmp/x0cf1b948fb/console
 /ocpu/tmp/x0cf1b948fb/info
 /ocpu/tmp/x0cf1b948fb/files/DESCRIPTION
+</pre>
 
-Which are addresses for later GET requests:
+<br />Which are addresses for later GET requests:
 
-curl http://localhost:4361/ocpu/tmp/x0cf1b948fb/R/.val/print
+<pre>curl http://localhost:4361/ocpu/tmp/x0cf1b948fb/R/.val/print</pre>
 
 
 
