@@ -24,19 +24,6 @@
 
 
 
-<script>
-//on page ready:
-$(function() {
-
-  var req = ocpu.rpc("GetAllCitations", {
-  }, function(output){
-    $("#citationinfo").html(output.message);
-  });
-
-
-});
-</script>
-
 
 </head>
 <body>
@@ -69,9 +56,30 @@ $(function() {
   <div id="content">
     <div id="normalcontent">
     			<div class="contentarea">
-<h2>Sources</h2>
+<h2>API</h2>
 
-<div id="citationinfo"></div>
+There are three ways to use DateLife. One is to use the <a href="http://www.datelife.org">datelife.org</a> website. Another is to use the datelife R package. The third is to use HTTP POST and GET requests. This page documents that.
+
+The API is based on that of of the <a href="https://www.opencpu.org">OpenCPU project</a>: see this <a href="http://jeroenooms.github.io/opencpu-manual/opencpu-server.pdf">PDF</a> for more info.
+
+[Change URL when deployed live]
+curl http://localhost:4361/ocpu/library/datelifeweb/R/GetAllCitations/ -d ""
+
+returns
+
+/ocpu/tmp/x0cf1b948fb/R/.val
+/ocpu/tmp/x0cf1b948fb/stdout
+/ocpu/tmp/x0cf1b948fb/warnings
+/ocpu/tmp/x0cf1b948fb/source
+/ocpu/tmp/x0cf1b948fb/console
+/ocpu/tmp/x0cf1b948fb/info
+/ocpu/tmp/x0cf1b948fb/files/DESCRIPTION
+
+Which are addresses for later GET requests:
+
+curl http://localhost:4361/ocpu/tmp/x0cf1b948fb/R/.val/print
+
+
 
 
 				<!-- Normal content area end -->
