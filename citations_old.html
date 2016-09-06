@@ -1,0 +1,90 @@
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>DateLife</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<script src="jquery-1.12.3.min.js"> </script>
+<script src="opencpu-0.5.js"> </script>
+
+<link rel="stylesheet" type="text/css" href="default.css" />
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-33370470-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+
+<script>
+//on page ready:
+$(function() {
+
+  var req = ocpu.rpc("GetAllCitations", {
+  }, function(output){
+    $("#citationinfo").html(output.message);
+  });
+
+
+});
+</script>
+
+
+</head>
+<body>
+
+<div id="upbg"></div>
+
+<div id="outer">
+
+
+
+
+
+	<div id="headerpic"></div>
+
+
+	<div id="menu">
+		<!-- HINT: Set the class of any menu link below to "active" to make it appear active -->
+		<ul>
+			<li><a href="index.html">Home</a></li>
+			<li><a href="https://github.com/phylotastic/datelife">Source code</a></li>
+			<li><a href="faq.html">FAQ</a></li>
+			<li><a href="contact.html">Contact</a></li>
+			<li><a href="http://phylotastic.org">Phylotastic</a></li>
+			<li><a href="citations.html">Citations</a></li>
+      <li><a href="api.html">API</a></li>
+		</ul>
+	</div>
+	<div id="menubottom"></div>
+
+  <div id="content">
+    <div id="normalcontent">
+    			<div class="contentarea">
+<h2>Sources</h2>
+
+<div id="citationinfo"></div>
+
+
+				<!-- Normal content area end -->
+			</div>
+		</div>
+	</div>
+
+	<div id="footer">
+			<div class="left">Reuse encouraged</div>
+			<div class="right">Design by <a href="http://www.nodethirtythree.com/">NodeThirtyThree Design</a></div>
+	</div>
+
+</div>
+
+</body>
+</html>
