@@ -1,7 +1,7 @@
 # datelifeweb
 Contains the code for running the datelife website.
 
-Ideally, the directories here go inside /srv/shiny-server. See the Dockerfile for datelifdocker.
+Ideally, the directories here go inside /srv/shiny-server. See the Dockerfile for [datelifedocker](https://github.com/phylotastic/datelifedocker).
 
 
 
