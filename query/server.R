@@ -41,7 +41,7 @@ observe({
 
  output$age <- renderTable(SummarizeResults(get.filtered.results(), output.format="data.frame"))
  output$medianPlot <- renderPlot(geoscalePhylo(get.consensus.tree(), cex.tip=2, cex.ts=2, cex.age=2, units=c("Era", "Period"), boxes="Period"))
-
+ output$citations <- dump.citations()
 
  output$downloadCSV <- downloadHandler(
    filename = "DatelifeTable.csv",
