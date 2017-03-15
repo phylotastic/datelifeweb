@@ -1,6 +1,7 @@
 library(shiny)
 library(datelife)
 library(strap)
+library(phangorn)
 library(ape)
 data(opentree_chronograms)
 
@@ -32,16 +33,42 @@ observe({
  }
 
  })
- get.filtered.results <- reactive({GetFilteredResults(input=input$taxa, partial=input$partial)})
+ get.filtered.results <- reactive({GetFilteredResults(input=input$taxa, partial=input$partial, usetnrs=input$usetnrs, approximatematch=input$approximatematch)})
  get.consensus.tree <- reactive({
    temp.tree <- SummarizeResults(get.filtered.results(), output.format="phylo.median")
    temp.tree$root.time <- max(branching.times(temp.tree))
    temp.tree
    })
-
+get.all.trees <- reactive({
+  noisy.trees <- SummarizeResults(get.filtered.results(), output.format="phylo.all")
+  tree.vector <- c()
+  tree.vector.names <- c()
+  for (i in sequence(length(noisy.trees))) {
+    if(class(noisy.trees[[i]])=="phylo") {
+      if(length(tree.vector)>0) {
+        tree.vector <- ape::c.phylo(tree.vector, noisy.trees[[i]])
+        tree.vector.names <- c(tree.vector.names, names(noisy.trees)[i])
+      } else {
+        tree.vector <- ape::c.phylo(noisy.trees[[i]])
+        tree.vector.names <- names(noisy.trees)[i]
+      }
+    }
+  }
+  names(tree.vector) <- tree.vector.names
+  tree.vector
+  })
  output$age <- renderTable(SummarizeResults(get.filtered.results(), output.format="data.frame"))
- output$medianPlot <- renderPlot(geoscalePhylo(get.consensus.tree(), cex.tip=2, cex.ts=2, cex.age=2, units=c("Era", "Period"), boxes="Period"))
-
+ output$medianPlot <- renderPlot(strap::geoscalePhylo(get.consensus.tree(), cex.tip=2, cex.ts=2, cex.age=2, units=c("Era", "Period"), boxes="Period"))
+ output$allPlot <- renderPlot({
+   all.trees <- get.all.trees()
+   max.depth <- max(sapply(all.trees, ape::branching.times))
+   par(mfcol=c(length(all.trees), 1))
+   for (i in sequence(length(all.trees))) {
+     local.tree <- all.trees[[i]]
+     ape::plot.phylo(local.tree, main=paste(strwrap(names(all.trees)[i]), collapse="\n"))
+     ape::axisPhylo()
+   }
+  }, width=600, height=2000)
 
  output$downloadCSV <- downloadHandler(
    filename = "DatelifeTable.csv",
