@@ -1,6 +1,7 @@
 library(shiny)
 
 shinyUI(fluidPage(
+tags$head(includeScript("google-analytics.js")),
 h1("Query"),
 textInput("taxa", "Taxa (comma delimited, spaces are ok) or Tree (Newick format, make sure to end with a semicolon)", "Rhea americana, Pterocnemia pennata, Struthio camelus", width="100%"),
  checkboxInput('partial', 'Include studies with a subset of desired taxa, perhaps resulting in underestimate of ages', TRUE),
