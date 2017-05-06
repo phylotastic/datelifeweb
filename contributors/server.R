@@ -1,3 +1,4 @@
+library(devtools)
 datelife.exists <- suppressWarnings(library("datelife", quietly = TRUE, logical.return=TRUE))
 if(!datelife.exists) {
   devtools::install_github("phylotastic/datelife")
