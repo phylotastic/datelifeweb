@@ -15,7 +15,7 @@ shinyServer(function(input, output, session) {
  for (i in sequence(length(authors))) {
    authors[i] <- paste(unlist(opentree_chronograms$authors[[i]]), collapse=" & ")
  }
- citation.info <- data.frame(reference=paste(names(opentree_chronograms$trees)), DOI=paste(opentree_chronograms$dois), curator=curators, author=authors, stringsAsFactors=FALSE)
+ citation.info <- data.frame(reference=paste(names(opentree_chronograms$trees)), DOI = paste(opentree_chronograms$dois), curator=curators, author=authors, stringsAsFactors=FALSE)
  citation.html <- citation.info
 
  ConvertToAHref <- function(x) {
@@ -23,7 +23,7 @@ shinyServer(function(input, output, session) {
  }
 #citation.html$DOI <- ConvertToAHref(citation.html$DOI )
 
- output$citations <- renderTable(citation.html, output.format="data.frame")
+ output$citations <- renderTable(citation.html, output.format = "data.frame")
 
  output$downloadcitationCSV <- downloadHandler(
    filename = "citations.csv",

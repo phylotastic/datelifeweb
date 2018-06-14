@@ -33,14 +33,17 @@ observe({
  }
 
  })
- get.filtered.results <- reactive({GetFilteredResults(input=input$taxa, partial=input$partial, usetnrs=input$usetnrs, approximatematch=input$approximatematch)})
+ get.filtered.results <- reactive({get_datelife_result(input = input$taxa,
+   partial = input$partial, use_tnrs = input$usetnrs,
+   approximate_match = input$approximatematch,
+   get_spp_fromtaxon = input$highertaxon)})
  get.consensus.tree <- reactive({
-   temp.tree <- SummarizeResults(get.filtered.results(), output.format="phylo.median")
-   temp.tree$root.time <- max(branching.times(temp.tree))
+   temp.tree <- summarize_datelife_result(get.filtered.results(), summary_format = "phylo_median")
+   temp.tree$root.time <- max(ape::branching.times(temp.tree))
    temp.tree
    })
 get.all.trees <- reactive({
-  noisy.trees <- SummarizeResults(get.filtered.results(), output.format="phylo.all")
+  noisy.trees <- summarize_datelife_result(get.filtered.results(), summary_format = "phylo_all")
   tree.vector <- c()
   tree.vector.names <- c()
   for (i in sequence(length(noisy.trees))) {
@@ -57,7 +60,7 @@ get.all.trees <- reactive({
   names(tree.vector) <- tree.vector.names
   tree.vector
   })
- output$age <- renderTable(SummarizeResults(get.filtered.results(), output.format="data.frame"))
+ output$age <- renderTable(summarize_datelife_result(get.filtered.results(), summary_format = "data_frame"))
  output$medianPlot <- renderPlot(strap::geoscalePhylo(get.consensus.tree(), cex.tip=2, cex.ts=2, cex.age=2, units=c("Era", "Period"), boxes="Period"))
  output$allPlot <- renderPlot({
    all.trees <- get.all.trees()
@@ -73,7 +76,7 @@ get.all.trees <- reactive({
  output$downloadCSV <- downloadHandler(
    filename = "DatelifeTable.csv",
    content = function(file) {
-     write.csv(SummarizeResults(get.filtered.results(), output.format="data.frame"), file)
+     write.csv(summarize_datelife_result(get.filtered.results(), summary_format = "data_frame"), file)
    }
  )
 })
