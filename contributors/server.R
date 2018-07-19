@@ -7,6 +7,7 @@ if(!datelife.exists) {
 library(shiny)
 library(strap)
 library(ape)
+library(phyloch)
 
 shinyServer(function(input, output, session) {
 

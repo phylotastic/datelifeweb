@@ -2,6 +2,7 @@ library(shiny)
 library(datelife)
 library(strap)
 library(ape)
+library(phyloch)
 data(opentree_chronograms)
 
 shinyServer(function(input, output, session) {

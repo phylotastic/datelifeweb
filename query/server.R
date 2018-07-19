@@ -3,6 +3,7 @@ library(datelife)
 library(strap)
 library(phangorn)
 library(ape)
+library(phyloch)
 data(opentree_chronograms)
 
 #from http://stackoverflow.com/questions/32872222/how-do-you-pass-parameters-to-a-shiny-app-via-url
@@ -42,6 +43,11 @@ get.consensus.tree <- reactive({
    temp.tree$root.time <- max(ape::branching.times(temp.tree))
    temp.tree
 })
+get.sdm.tree <- reactive({
+   temp.tree <- summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "phylo_sdm")
+   temp.tree$root.time <- max(ape::branching.times(temp.tree))
+   temp.tree
+})
 
 get.all.trees <- reactive({
   noisy.trees <- summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "phylo_all")
@@ -68,7 +74,7 @@ summ.table <- reactive({
  output$medianPlot <- renderPlot({
    # par(xpd = TRUE)
    # par(oma = c(2,0,2,0))  #
-   # par(mai = c(0,0,0,0))
+   # par(mai = c(1,1,1,2))
    # par(mar = c(0,0,0,0))
    strap::geoscalePhylo(get.consensus.tree(), cex.tip = 1.5, cex.ts = 1.5, cex.age = 2,
    units=c("Era", "Period"), boxes="Period", label.offset = 1)
@@ -77,7 +83,44 @@ summ.table <- reactive({
               # box("inner", col = "purple")
               # box("outer", col = "blue")
 
-   }, height = function() 100 + (30 * ape::Ntip(get.consensus.tree())))
+   }, height = function(){
+        tipnum <- ape::Ntip(get.consensus.tree())
+          if(tipnum > 10){
+            hei <- 50 + (30 * tipnum)
+          } else {
+            hei <- 300
+          }
+        hei
+      }
+  )
+  output$sdmPlot <- renderPlot({
+    par(xpd = TRUE)
+    par(oma = c(8,0,0,0))  #
+    par(mai = c(1,1,1,2))
+    par(mar = c(2,0,2,0))
+    sdm.tree <- get.sdm.tree()
+    ape::plot.phylo(sdm.tree, cex = 1.5,
+    edge.width = 2, label.offset = 0.5)
+    data("strat2012", package = "phyloch")
+    phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
+    col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
+    gridty = "twodash")
+    mtext("Time (myrs)", side = 1, font = 2, line = 0, at = max(ape::branching.times(sdm.tree))/2, outer = TRUE)
+               # box("plot", col = "red")
+               # box("figure", col = "green")
+               # box("inner", col = "purple")
+               # box("outer", col = "blue")
+
+    }, height = function(){
+         tipnum <- ape::Ntip(get.consensus.tree())
+           if(tipnum > 6){
+             hei <- 50 + (20 * tipnum)
+           } else {
+             hei <- 300
+           }
+         hei
+       }
+   )
 #  output$allPlot <- reactive({
 #    all.trees <- get.all.trees()
 #    max.depth <- max(unlist(sapply(all.trees, ape::branching.times)))  # max(sapply(all.trees, function (x) {max(ape::branching.times(x))}))
@@ -132,7 +175,7 @@ all.trees.height <- function(){
      ape::axisPhylo(cex.lab = 2, cex = 2)
      mtext (paste(strwrap(names(all.trees)[i]), collapse = "\n"), side = 3, outer = F, line = 1, at = max.depth/2)
      mtext("Time (myrs)", side = 1, font = 2, line = 3, at = max.depth/2)
-     box("figure", col = "gray", bty = "c")
+     # box("figure", col = "gray", bty = "u")
    }
    box("outer", col = "gray")
 

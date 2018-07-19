@@ -20,6 +20,9 @@ textInput("taxa", "Taxa (comma delimited; spaces or underscores in binomials are
  h2("Plot of tree from median ages"),
  p("Note that if partial matching is set up, branch lengths might not result in an ultrametric tree (since different trees may affect each edge"),
  plotOutput("medianPlot", height = "auto"),
+ h2("Plot of tree from supertree method (sdm)"),
+ p(" "),
+ plotOutput("sdmPlot", height = "auto"),
  h2("Plot of all trees"),
  plotOutput("allPlot", height = "auto")
 ))
