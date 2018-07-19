@@ -61,23 +61,82 @@ get.all.trees <- reactive({
   names(tree.vector) <- tree.vector.names
   tree.vector
 })
-
 summ.table <- reactive({
    summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "data_frame", partial = input$partial)
 })
-
  output$age <- renderTable(summ.table())
- output$medianPlot <- renderPlot(strap::geoscalePhylo(get.consensus.tree(), cex.tip=2, cex.ts=2, cex.age=2, units=c("Era", "Period"), boxes="Period"))
+ output$medianPlot <- renderPlot({
+   # par(xpd = TRUE)
+   # par(oma = c(2,0,2,0))  #
+   # par(mai = c(0,0,0,0))
+   # par(mar = c(0,0,0,0))
+   strap::geoscalePhylo(get.consensus.tree(), cex.tip = 1.5, cex.ts = 1.5, cex.age = 2,
+   units=c("Era", "Period"), boxes="Period", label.offset = 1)
+              # box("plot", col = "red")
+              # box("figure", col = "green")
+              # box("inner", col = "purple")
+              # box("outer", col = "blue")
+
+   }, height = function() 100 + (30 * ape::Ntip(get.consensus.tree())))
+#  output$allPlot <- reactive({
+#    all.trees <- get.all.trees()
+#    max.depth <- max(unlist(sapply(all.trees, ape::branching.times)))  # max(sapply(all.trees, function (x) {max(ape::branching.times(x))}))
+#    # par(mfcol=c(length(all.trees), 1), xpd = TRUE)
+#    graph.height <- 100 + unlist(sapply(all.trees, ape::Ntip)) * 50
+#    for (i in sequence(length(all.trees))){
+#      renderPlot({
+#        par(xpd = TRUE)
+#        par(oma=c(0,0,6,0))  #
+#        par(mar=c(0,0,0,0))
+#        par(mai=c(1,1,0.25,3))
+#        ape::plot.phylo(all.trees[[i]], main = "", cex = 2,
+#            edge.width = 2, label.offset = 1, x.lim = c(0, round(max.depth + 5, digits = -1)))
+#            ape::axisPhylo(cex.lab = 2, cex = 0.5)
+#            mtext (paste(strwrap(names(all.trees)[i]), collapse = "\n"), side = 3, outer = TRUE, line = 0)
+#            mtext("Time (myrs)", side = 1, font = 2, line = 3, at = max.depth/2)
+#            box("plot", col = "red")
+#            box("figure", col = "green")
+#            box("inner", col = "purple")
+#            box("outer", col = "blue")
+#      }, height = graph.height[i])
+#    }
+# })
+ # for (i in sequence(length(all.trees))){
+ #   iplot <- renderPlot({
+ #     ape::plot.phylo(all.trees[[i]], main = paste(strwrap(names(all.trees)[i]), collapse = "\n"), cex = 2,
+ #     edge.width = 2, label.offset = 2, x.lim = c(0, ceiling(max.depth)))
+ #     ape::axisPhylo(cex.lab = 2, cex = 2)
+ #     mtext("Time (myrs)", side = 1, font = 2, line = 2)
+ #     box("figure", col = "green")
+ #     box("outer", col = "blue")
+ #   })
+ #    output$allPlot <- c( output$allPlot, list(iplot))
+ # }
+all.trees.height <- function(){
+  all.trees <- get.all.trees()
+  x <- sum(unlist(sapply(all.trees, ape::Ntip)))
+  return((100 * length(all.trees)) + (x * 30))
+}
  output$allPlot <- renderPlot({
    all.trees <- get.all.trees()
-   max.depth <- max(sapply(all.trees, ape::branching.times))
-   par(mfcol=c(length(all.trees), 2))
+   max.depth <- round(max(unlist(sapply(all.trees, ape::branching.times))) + 5, digits = -1) # max(sapply(all.trees, function (x) {max(ape::branching.times(x))}))
+   par(mfcol=c(length(all.trees), 1))
+          par(xpd = TRUE)
+          par(oma=c(0,0,3,0))  #
+          par(mar=c(0,0,0,0))
+          par(mai=c(1,1,1,2))
    for (i in sequence(length(all.trees))) {
      local.tree <- all.trees[[i]]
-     ape::plot.phylo(local.tree, main = paste(strwrap(names(all.trees)[i]), collapse="\n"), cex = 2)
-     ape::axisPhylo()
+     ape::plot.phylo(local.tree, main = "", cex = 2,
+     edge.width = 2, label.offset = 1, x.lim = c(0, max.depth))
+     ape::axisPhylo(cex.lab = 2, cex = 2)
+     mtext (paste(strwrap(names(all.trees)[i]), collapse = "\n"), side = 3, outer = F, line = 1, at = max.depth/2)
+     mtext("Time (myrs)", side = 1, font = 2, line = 3, at = max.depth/2)
+     box("figure", col = "gray", bty = "c")
    }
-  }, width=600, height=2000)
+   box("outer", col = "gray")
+
+  }, height = all.trees.height)
 
  output$downloadCSV <- downloadHandler(
    filename = "DatelifeTable.csv",
