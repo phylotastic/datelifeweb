@@ -32,4 +32,19 @@ shinyServer(function(input, output, session) {
      write.csv(citation.info, file=file)
    }
  )
+
+ datelife.web <- reactive({
+    web.citation <- paste0("wwww.datelife.web, entered on ", Sys.Date())
+    web.citation
+ })
+
+ DateLifeCitations <- data.frame(x = "Sanchez-Reyes LL and O'Meara B. DateLife: Leveraging Databases to Reavel the Dated Tree of Life. In prep.",
+                                       y = datelife.web())
+
+ output$downloadDateLifeCitation <- downloadHandler(
+   filename = "DateLifeCitations.csv",
+   content = function(file) {
+     write.csv(DateLifeCitations, file=file)
+   }
+ )
 })

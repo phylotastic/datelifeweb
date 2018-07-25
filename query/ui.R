@@ -1,28 +1,58 @@
 library(shiny)
-
+text_width <- "100%"
 shinyUI(fluidPage(
 tags$head(includeScript("google-analytics.js")),
-h1("Query"),
-textInput("taxa", "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format, make sure to end with a semicolon)", "Rhea americana, Pterocnemia pennata, Struthio camelus", width="100%"),
- checkboxInput('partial', 'Show all studies. Includes studies with a subset of desired taxa, perhaps resulting in underestimate of ages', TRUE),
+h1("DateLife Query"),
+textInput("taxa", "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format, make sure to end with a semicolon)",
+"Rhea americana, Pterocnemia pennata, Struthio camelus", width = "100%"),
+ checkboxInput('partial',
+ 'Show all studies. Includes studies with a subset of desired taxa, perhaps resulting in underestimate of maximum age',
+ TRUE, width = text_width),
+ # br(),
+ checkboxInput('highertaxon', 'Search species within higher taxa. Several higher taxa can be searched at a time, comma separated',
+ FALSE, width = text_width),
+ # br(),
+ checkboxInput('usetnrs', 'Use name resolution to deal with changes in taxonomy or misspellings (slows run considerably)',
+ FALSE, width = text_width),
+ # br(),
+ checkboxInput('approximatematch', 'Use approximate matching for name resolution (can handle mismatches, but makes runs MUCH slower)',
+ FALSE, width = text_width),
  br(),
- checkboxInput('highertaxon', 'Search species within higher taxa', FALSE),
- br(),
- checkboxInput('usetnrs', 'Use name resolution to deal with changes in taxonomy or misspellings (slows run considerably)', FALSE),
- br(),
- checkboxInput('approximatematch', 'Use approximate matching for name resolution (can handle mismatches, but makes runs MUCH slower)', FALSE),
- br(),
- h1("Results"),
- h2("Downloads"),
+
+ h1("DateLife Results"),
+
+ h3("Downloads"),
  downloadLink('downloadCSV', 'Table in csv format, including Newick of trees'),
+ br(),
+ downloadLink('downloadMedian', 'Summary tree from median of ages, in Newick format'),
+ br(),
+ downloadLink('downloadSDM', 'Summary tree from supertree method, in Newick format'),
+ br(),
+ downloadLink('downloadCitations', 'All trees citations in txt format'),
+
  h2("Table of ages and sources"),
- tableOutput("age"),
+ withSpinner(ui_element = tableOutput("age"), type = 4),
+ br(),
+
  h2("Plot of tree from median ages"),
  p("Note that if partial matching is set up, branch lengths might not result in an ultrametric tree (since different trees may affect each edge"),
- plotOutput("medianPlot", height = "auto"),
+ withSpinner(ui_element = plotOutput("medianPlot", height = "auto"), type = 4),
+ br(),
+ br(),
+
  h2("Plot of tree from supertree method (sdm)"),
  p(" "),
- plotOutput("sdmPlot", height = "auto"),
- h2("Plot of all trees"),
- plotOutput("allPlot", height = "auto")
+ withSpinner(ui_element = plotOutput("sdmPlot", height = "auto"), type = 4),
+ br(),
+ br(),
+
+ h2("Plot of all source trees"),  # subset
+ h3("Overlay plots"),  #
+ p("Only chronograms with > 2 tips"),
+ withSpinner(ui_element = plotOutput("densiTreePlot", height = "auto"), type = 4),
+ br(),
+ br(),
+
+ h3("Individual plots"),  # subset
+ withSpinner(ui_element = plotOutput("allPlot", height = "auto"), type = 4)
 ))
