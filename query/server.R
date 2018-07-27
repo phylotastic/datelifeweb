@@ -95,7 +95,7 @@ shinyServer(function(input, output, session) {
     })
 
    output$medianPlot <- renderPlot({
-     mar.tips <- max.tip.label() * 0.6  # to control the margin on th eside of tip labels
+     mar.tips <- max.tip.label() * 0.6  # to control the margin on the side of tip labels
      par(xpd = TRUE)
      par(oma = c(8,0,0,0))  #
      # par(mai = c(1,1,1,2))
@@ -139,10 +139,10 @@ shinyServer(function(input, output, session) {
         col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
         gridty = "twodash")
       # mtext("Time (MYA)", side = 1, font = 2, line = 8, outer = TRUE)  #
-                 box("plot", col = "red")
-                 box("figure", col = "green")
-                 # box("inner", col = "purple")
-                 box("outer", col = "blue")
+                 # box("plot", col = "red")
+                 # box("figure", col = "green")
+                 # # box("inner", col = "purple")
+                 # box("outer", col = "blue")
 
       }, height = function(){
            tipnum <- ape::Ntip(get.consensus.tree())
@@ -177,10 +177,10 @@ shinyServer(function(input, output, session) {
         #                  col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
         #                  gridty = "twodash")
         # # mtext("Time (MYA)", side = 1, font = 2, line = 8, outer = TRUE)  #
-        box("plot", col = "red")
-        box("figure", col = "green")
-        # box("inner", col = "purple")
-        box("outer", col = "blue")
+        # box("plot", col = "red")
+        # box("figure", col = "green")
+        # # box("inner", col = "purple")
+        # box("outer", col = "blue")
       }, height = function(){
         tipnum <- ape::Ntip(get.consensus.tree())
         if(tipnum > 10){
@@ -277,7 +277,7 @@ shinyServer(function(input, output, session) {
    output$downloadCitations <- downloadHandler(
      filename = "AllTreesCitations.txt",
      content = function(file) {
-       write(summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "citations"), file = file)
+       write(unique(summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "citations")), file = file)
      }
    )
 
