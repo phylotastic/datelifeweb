@@ -1,10 +1,18 @@
 library(shiny)
 text_width <- "100%"
 shinyUI(fluidPage(
+  # possible work around textAreaInput not spanning 100% of webpage
+  tags$style(HTML("
+    .shiny-input-container:not(.shiny-input-container-inline) {
+    width: 100%;
+  }")),
 tags$head(includeScript("google-analytics.js")),
 h1("DateLife Query"),
-textInput("taxa", "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format, make sure to end with a semicolon)",
-"Rhea americana, Pterocnemia pennata, Struthio camelus", width = "100%"),
+# textInput does not allowa controlling height of box.
+# textInput("taxa", "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format, make sure to end with a semicolon)",
+# "Rhea americana, Pterocnemia pennata, Struthio camelus", width = "100%"),
+textAreaInput("taxa", "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format, make sure to end with a semicolon)",
+"Rhea americana, Pterocnemia pennata, Struthio camelus", width = "100%", height = "auto"),
  checkboxInput('partial',
  'Show all studies. Includes studies with a subset of desired taxa, perhaps resulting in underestimate of maximum age',
  TRUE, width = text_width),
@@ -55,4 +63,5 @@ textInput("taxa", "Taxa (comma delimited; spaces or underscores in binomials are
 
  h3("Individual plots"),  # subset
  withSpinner(ui_element = plotOutput("allPlot", height = "auto"), type = 4)
+ # for (i in 1:length(output$))
 ))

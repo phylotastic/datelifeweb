@@ -104,8 +104,11 @@ shinyServer(function(input, output, session) {
      max.depth <- max.tree.age()
      median.tree$root.edge <- max.depth - max(ape::branching.times(median.tree))
      # tip.label.area <- max.tip.label()
-     ape::plot.phylo(median.tree, cex = 1.5,
-       edge.width = 2, label.offset = 0.5, x.lim = c(0, max.depth), root.edge = TRUE)
+     # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
+       # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
+
+     ape::plot.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
+       x.lim = c(0, max.depth), root.edge = TRUE)
      data("strat2012", package = "phyloch")
      phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
        col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
@@ -131,6 +134,8 @@ shinyServer(function(input, output, session) {
       max.depth <- max.tree.age()
       sdm.tree$root.edge <- max.depth - max(ape::branching.times(sdm.tree))
       # tip.label.area <- max.tip.label()
+      # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
+        # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
       ape::plot.phylo(sdm.tree, cex = 1.5,
         edge.width = 2, label.offset = 0.5, x.lim = c(0, max.depth), root.edge = TRUE)
       mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 7, outer = TRUE)
@@ -146,8 +151,8 @@ shinyServer(function(input, output, session) {
 
       }, height = function(){
            tipnum <- ape::Ntip(get.consensus.tree())
-             if(tipnum > 6){
-               hei <- 50 + (20 * tipnum)
+             if(tipnum > 10){
+               hei <- 50 + (30 * tipnum)
              } else {
                hei <- 300
              }
