@@ -91,7 +91,7 @@ shinyUI(fluidPage(
         br(),
         # withSpinner(ui_element = plotOutput("allPlot", height = "auto"), type = 4),
         # studyPlotUI("name"),
-        withSpinner(ui_element = uiOutput("plots"), type = 4),
+        withSpinner(ui_element = uiOutput("allPlots"), type = 4),
         br()
       ),
       tabPanel(h4("Downloads"), br(),

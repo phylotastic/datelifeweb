@@ -89,19 +89,19 @@ shinyServer(function(input, output, session) {
       ind <- which.max(nchar(tip.label.length))
       nchar(tip.label.length[ind])  # use strWidth?
     })
+
     output$age <- renderTable({
        summ.table()
     })
+
    output$medianPlot <- renderPlot({
      mar.tips <- max.tip.label() * 0.6  # to control the margin on the side of tip labels
-     par(xpd = TRUE)
-     par(oma = c(8,0,0,0))  #
-     # par(mai = c(1,1,1,2))
-     par(mar = c(2,0,2,mar.tips))
      median.tree <- get.consensus.tree()
      max.depth <- max.tree.age()
      median.tree$root.edge <- max.depth - max(ape::branching.times(median.tree))
-     # tip.label.area <- max.tip.label()
+     par(xpd = TRUE)
+     par(oma = c(oma1_f(median.tree),0,0,0))  #
+     par(mar = c(2,0,2,mar.tips))
      # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
        # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
      ape::plot.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
@@ -110,51 +110,35 @@ shinyServer(function(input, output, session) {
      phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
        col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
        gridty = "twodash")
-     mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 7, outer = TRUE)
+     mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(median.tree) - 1, outer = TRUE)
      }, height = function(){
-          tipnum <- ape::Ntip(get.consensus.tree())
-            if(tipnum > 10){
-              hei <- 50 + (30 * tipnum)
-            } else {
-              hei <- 300
-            }
-          hei
+           tree <- get.consensus.tree()
+           hei <- tree.height(tree)
+           hei
         }
     )
 
     output$sdmPlot <- renderPlot({
       mar.tips <- max.tip.label() * 0.6
-      par(xpd = TRUE)
-      par(oma = c(8,0,0,0))  #
-      # par(mai = c(1,1,1,2))
-      par(mar = c(2,0,2,mar.tips))
       sdm.tree <- get.sdm.tree()
       max.depth <- max.tree.age()
       sdm.tree$root.edge <- max.depth - max(ape::branching.times(sdm.tree))
-      # tip.label.area <- max.tip.label()
+      par(xpd = TRUE)
+      par(oma = c(oma1_f(sdm.tree),0,0,0))  #
+      par(mar = c(2,0,2,mar.tips))
       # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
         # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
       ape::plot.phylo(sdm.tree, cex = 1.5,
         edge.width = 2, label.offset = 0.5, x.lim = c(0, max.depth), root.edge = TRUE)
-      mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 7, outer = TRUE)
+      mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(sdm.tree) - 1, outer = TRUE)
       data("strat2012", package = "phyloch")
       phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
         col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
         gridty = "twodash")
-      # mtext("Time (MYA)", side = 1, font = 2, line = 8, outer = TRUE)  #
-                 # box("plot", col = "red")
-                 # box("figure", col = "green")
-                 # # box("inner", col = "purple")
-                 # box("outer", col = "blue")
-
       }, height = function(){
-           tipnum <- ape::Ntip(get.sdm.tree())
-             if(tipnum > 10){
-               hei <- 50 + (30 * tipnum)
-             } else {
-               hei <- 300
-             }
-           hei
+            tree <- get.sdm.tree()
+            hei <- tree.height(tree)
+            hei
          }
      )
 
@@ -175,117 +159,18 @@ shinyServer(function(input, output, session) {
         all.trees <- all.trees[sapply(all.trees, function (x) ape::Ntip(x)) > 2]
         class(all.trees) <- "multiPhylo"
         phangorn::densiTree(x = all.trees, cex = 1.5, edge.width = 2, label.offset = 0.01)
-        mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 3, outer = TRUE)
-        # data("strat2012", package = "phyloch")
-        # phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
-        #                  col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
-        #                  gridty = "twodash")
-        # # mtext("Time (MYA)", side = 1, font = 2, line = 8, outer = TRUE)  #
-        # box("plot", col = "red")
-        # box("figure", col = "green")
-        # # box("inner", col = "purple")
-        # box("outer", col = "blue")
+        mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 2, outer = TRUE)
       }, height = function(){
-        tipnum <- ape::Ntip(get.consensus.tree())
-        if(tipnum > 10){
-          hei <- 50 + (30 * tipnum)
-        } else {
-          hei <- 300
-        }
+        tree <- get.consensus.tree()
+        hei <- tree.height(tree)
         hei
       }
     )
 
-  #  output$allPlot <- reactive({
-  #    all.trees <- get.all.trees()
-  #    max.depth <- max(unlist(sapply(all.trees, ape::branching.times)))  # max(sapply(all.trees, function (x) {max(ape::branching.times(x))}))
-  #    # par(mfcol=c(length(all.trees), 1), xpd = TRUE)
-  #    graph.height <- 100 + unlist(sapply(all.trees, ape::Ntip)) * 50
-  #    for (i in sequence(length(all.trees))){
-  #      renderPlot({
-  #        par(xpd = TRUE)
-  #        par(oma=c(0,0,6,0))  #
-  #        par(mar=c(0,0,0,0))
-  #        par(mai=c(1,1,0.25,3))
-  #        ape::plot.phylo(all.trees[[i]], main = "", cex = 2,
-  #            edge.width = 2, label.offset = 1, x.lim = c(0, round(max.depth + 5, digits = -1)))
-  #            ape::axisPhylo(cex.lab = 2, cex = 0.5)
-  #            mtext (paste(strwrap(names(all.trees)[i]), collapse = "\n"), side = 3, outer = TRUE, line = 0)
-  #            mtext("Time (myrs)", side = 1, font = 2, line = 3, at = max.depth/2)
-  #            box("plot", col = "red")
-  #            box("figure", col = "green")
-  #            box("inner", col = "purple")
-  #            box("outer", col = "blue")
-  #      }, height = graph.height[i])
-  #    }
-  # })
-  #
-  #  for (i in sequence(length(all.trees))){
-  #    iplot <- renderPlot({
-  #      ape::plot.phylo(all.trees[[i]], main = paste(strwrap(names(all.trees)[i]), collapse = "\n"), cex = 2,
-  #      edge.width = 2, label.offset = 2, x.lim = c(0, ceiling(max.depth)))
-  #      ape::axisPhylo(cex.lab = 2, cex = 2)
-  #      mtext("Time (myrs)", side = 1, font = 2, line = 2)
-  #      box("figure", col = "green")
-  #      box("outer", col = "blue")
-  #    })
-  #     output$allPlot <- c( output$allPlot, list(iplot))
-  #  }
-  #   all.trees.height <- function(){
-  #     all.trees <- get.all.trees()
-  #     x <- sum(unlist(sapply(all.trees, ape::Ntip)))
-  #     return((100 * length(all.trees)) + (x * 30))
-  #   }
-
-   # output$allPlot <- renderPlot({
-   #   all.trees <- get.all.trees()
-   #   max.depth <- round(max(unlist(sapply(all.trees, ape::branching.times))) + 5, digits = -1) # max(sapply(all.trees, function (x) {max(ape::branching.times(x))}))
-   #   par(mfcol=c(length(all.trees), 1))
-   #          par(xpd = TRUE)
-   #          par(oma=c(0,0,3,0))  #
-   #          par(mar=c(0,0,0,0))
-   #          par(mai=c(1,1,1,2))
-   #   for (i in sequence(length(all.trees))) {
-   #     local.tree <- all.trees[[i]]
-   #     ape::plot.phylo(local.tree, main = "", cex = 2,
-   #     edge.width = 2, label.offset = 1, x.lim = c(0, max.depth))
-   #     ape::axisPhylo(cex.lab = 2, cex = 2)
-   #     mtext (paste(strwrap(names(all.trees)[i]), collapse = "\n"), side = 3, outer = F, line = 1, at = max.depth/2)
-   #     mtext("Time (MYA)", side = 1, font = 2, line = 3, at = max.depth/2)
-   #     # box("figure", col = "gray", bty = "u")
-   #   }
-   #   box("outer", col = "gray")
-   #
-   #  }, height = all.trees.height)
-
-   oma1_f <- function(tree){
-     tipnum <- ape::Ntip(tree)
-     if(tipnum == 2){
-       oma1 <- 10.5
-     } else if (tipnum == 3){
-       oma1 <- 8
-     } else if (tipnum == 4){
-       oma1 <- 7
-     } else if (tipnum >= 5 & tipnum <= 7){
-       oma1 <- 6
-     } else if (tipnum >= 8 & tipnum <= 10){
-       oma1 <- 5
-     } else {
-       oma1 <- 4
-     }
-     oma1
-   }
-   tree.height <- function(tree){
-     tipnum <- ape::Ntip(tree)
-     if(tipnum > 10){
-       hei <- 50 + (30 * tipnum)
-     } else {
-       hei <- 300
-     }
-     hei
-   }
-   # callModule(studyPlot, "name", tree.index = 1)
-   output$plots <- renderUI({
+   # callModule(studyPlot, "name", tree.index = 1)  # tried with modules,
+   #but couldn't make it work. Need to think more about it. I found the following
+   # work around for now from https://gist.github.com/wch/5436415/:
+   output$allPlots <- renderUI({
      plot_output_list <- vector(mode = "list")
      for (i in 1:length(get.all.trees())){
        plottitlename <- paste0("plot_title", i)
@@ -294,17 +179,10 @@ shinyServer(function(input, output, session) {
        plot_output_list <- c(plot_output_list, list(withSpinner(ui_element = plotOutput(plotname, height = "auto"), type = 4)))
        plot_output_list <- c(plot_output_list, list(br()), list(br()), list(br()))  # three blank rows between plots
      }
-     # plot_output_list <- lapply(1:length(get.all.trees()), function(i) {
-     #   plotname <- paste0("plot", i)
-     #   # renderText(paste("plot", i))
-     #   plotOutput(plotname, height = 280, width = 280)
-     # })
-
      # Convert the list to a tagList - this is necessary for the list of items
      # to display properly.
      do.call(tagList, plot_output_list)
    })
-
    # Call renderPlot for each one. Plots are only actually generated when they
    # are visible on the web page.
    i <- 1
@@ -314,7 +192,7 @@ shinyServer(function(input, output, session) {
      # of i in the renderPlot() will be the same across all instances, because
      # of when the expression is evaluated.
      local({
-       my_i <- i
+       my_i <- i  # this is important
        plotname <- paste("plot", my_i, sep="")
        plottitlename <- paste0("plot_title", my_i)
        output[[plottitlename]] <- renderText({
@@ -353,7 +231,6 @@ shinyServer(function(input, output, session) {
      i <- i + 1
    }
 
-
    output$downloadCSV <- downloadHandler(
      filename = "DatelifeTable.csv",
      content = function(file) {
@@ -381,5 +258,4 @@ shinyServer(function(input, output, session) {
        write(unique(summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "citations")), file = file)
      }
    )
-
 })
