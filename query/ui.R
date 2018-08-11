@@ -84,7 +84,11 @@ shinyUI(fluidPage(
       tabPanel(h4("All source trees"), br(),
         h2("Overlay plots"),  # with densiTree plot function
         p("Only chronograms with > 2 tips"),
-        withSpinner(ui_element = plotOutput("densiTreePlot", height = "auto"), type = 4),
+        withSpinner(ui_element = plotOutput("densiTreePlotSome", height = "auto"), type = 4),
+        br(),
+        br(),
+        p("All chronograms"),
+        withSpinner(ui_element = plotOutput("densiTreePlotAll", height = "auto"), type = 4),
         br(),
         br(),
         h2("Individual plots"),  # subset

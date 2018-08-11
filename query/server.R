@@ -5,7 +5,7 @@ library(phangorn)
 library(ape)
 library(phyloch)
 library(shinycssloaders)
-
+devtools::load_all("~/Desktop/datelife")
 data(opentree_chronograms)
 source("allplots.R")
 #from http://stackoverflow.com/questions/32872222/how-do-you-pass-parameters-to-a-shiny-app-via-url
@@ -142,7 +142,7 @@ shinyServer(function(input, output, session) {
          }
      )
 
-     output$densiTreePlot <- renderPlot({
+     output$densiTreePlotSome <- renderPlot({
         all.trees <- get.all.trees()
         mar.tips <- max.tip.label() * 0.6
         par(xpd = TRUE)
@@ -155,10 +155,9 @@ shinyServer(function(input, output, session) {
             x
           }
         )
-        # densiTree function only works with trees with more than two tips:
-        all.trees <- all.trees[sapply(all.trees, function (x) ape::Ntip(x)) > 2]
-        class(all.trees) <- "multiPhylo"
-        phangorn::densiTree(x = all.trees, cex = 1.5, edge.width = 2, label.offset = 0.01)
+        # densiTree function only works with trees with more than two tips when consensus tree is not provided
+        # so we did our own function in datelife:
+        plot_densitree(trees = all.trees, include_all = FALSE, cex = 1.5, edge.width = 2, label.offset = 0.01)
         mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 2, outer = TRUE)
       }, height = function(){
         tree <- get.consensus.tree()
@@ -167,6 +166,30 @@ shinyServer(function(input, output, session) {
       }
     )
 
+    output$densiTreePlotAll <- renderPlot({
+       all.trees <- get.all.trees()
+       mar.tips <- max.tip.label() * 0.6
+       par(xpd = TRUE)
+       par(oma = c(4,0,0,0))  #
+       # par(mai = c(1,1,1,2))
+       par(mar = c(2,0,2,0))
+       max.depth <- max.tree.age()
+       all.trees <- lapply(all.trees, function(x) {
+           x$root.edge <- max.depth - max(ape::branching.times(x))
+           x
+         }
+       )
+       # densiTree function only works with trees with more than two tips when consensus tree is not provided
+       # so we did our own function in datelife:
+       plot_densitree(trees = all.trees, include_all = TRUE, cex = 1.5, edge.width = 2, label.offset = 0.01)
+       mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 2, outer = TRUE)
+     }, height = function(){
+       tree <- get.consensus.tree()
+       hei <- tree.height(tree)
+       hei
+     }
+   )
+   
    # callModule(studyPlot, "name", tree.index = 1)  # tried with modules,
    #but couldn't make it work. Need to think more about it. I found the following
    # work around for now from https://gist.github.com/wch/5436415/:
