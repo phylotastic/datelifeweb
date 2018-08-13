@@ -1,4 +1,5 @@
 library(shiny)
+library(shinycssloaders)
 source("allplots.R")
 text_width <- "100%"
 

@@ -5,7 +5,7 @@ library(phangorn)
 library(ape)
 library(phyloch)
 library(shinycssloaders)
-devtools::load_all("~/Desktop/datelife")
+# devtools::load_all("~/Desktop/datelife")
 data(opentree_chronograms)
 source("allplots.R")
 #from http://stackoverflow.com/questions/32872222/how-do-you-pass-parameters-to-a-shiny-app-via-url
@@ -189,7 +189,7 @@ shinyServer(function(input, output, session) {
        hei
      }
    )
-   
+
    # callModule(studyPlot, "name", tree.index = 1)  # tried with modules,
    #but couldn't make it work. Need to think more about it. I found the following
    # work around for now from https://gist.github.com/wch/5436415/:
