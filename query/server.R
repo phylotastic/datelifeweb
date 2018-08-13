@@ -142,29 +142,29 @@ shinyServer(function(input, output, session) {
          }
      )
 
-     output$densiTreePlotSome <- renderPlot({
-        all.trees <- get.all.trees()
-        mar.tips <- max.tip.label() * 0.6
-        par(xpd = TRUE)
-        par(oma = c(4,0,0,0))  #
-        # par(mai = c(1,1,1,2))
-        par(mar = c(2,0,2,0))
-        max.depth <- max.tree.age()
-        all.trees <- lapply(all.trees, function(x) {
-            x$root.edge <- max.depth - max(ape::branching.times(x))
-            x
-          }
-        )
-        # densiTree function only works with trees with more than two tips when consensus tree is not provided
-        # so we did our own function in datelife:
-        plot_densitree(trees = all.trees, include_all = FALSE, cex = 1.5, edge.width = 2, label.offset = 0.01)
-        mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 2, outer = TRUE)
-      }, height = function(){
-        tree <- get.consensus.tree()
-        hei <- tree.height(tree)
-        hei
-      }
-    )
+    #  output$densiTreePlotSome <- renderPlot({
+    #     all.trees <- get.all.trees()
+    #     mar.tips <- max.tip.label() * 0.6
+    #     par(xpd = TRUE)
+    #     par(oma = c(4,0,0,0))  #
+    #     # par(mai = c(1,1,1,2))
+    #     par(mar = c(2,0,2,0))
+    #     max.depth <- max.tree.age()
+    #     all.trees <- lapply(all.trees, function(x) {
+    #         x$root.edge <- max.depth - max(ape::branching.times(x))
+    #         x
+    #       }
+    #     )
+    #     # densiTree function only works with trees with more than two tips when consensus tree is not provided
+    #     # so we did our own function in datelife:
+    #     plot_densitree(trees = all.trees, include_all = FALSE, cex = 1.5, edge.width = 2, label.offset = 0.01)
+    #     mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 2, outer = TRUE)
+    #   }, height = function(){
+    #     tree <- get.consensus.tree()
+    #     hei <- tree.height(tree)
+    #     hei
+    #   }
+    # )
 
     output$densiTreePlotAll <- renderPlot({
        all.trees <- get.all.trees()
