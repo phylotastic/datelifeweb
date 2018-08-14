@@ -1,6 +1,6 @@
 library(shiny)
 library(shinycssloaders)
-source("allplots.R")
+# source("allplots.R")
 text_width <- "100%"
 
 shinyUI(fluidPage(
@@ -11,7 +11,7 @@ shinyUI(fluidPage(
   }")),
   tags$head(includeScript("google-analytics.js")),
   h1("DateLife Query"),
-  # textInput does not allowa controlling height of box.
+  # textInput does not allow controlling height of box.
   # textInput("taxa", "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format, make sure to end with a semicolon)",
   # "Rhea americana, Pterocnemia pennata, Struthio camelus", width = text_width),
   textAreaInput("taxa", "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format, make sure to end with a semicolon)",

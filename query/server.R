@@ -7,7 +7,36 @@ library(phyloch)
 library(shinycssloaders)
 # devtools::load_all("~/Desktop/datelife")
 data(opentree_chronograms)
-source("allplots.R")
+data("strat2012", package = "phyloch")
+# source("allplots.R")
+oma1_f <- function(tree){
+  tipnum <- ape::Ntip(tree)
+  if(tipnum == 2){
+    oma1 <- 10  # tried to increase to 10.5, so numbers wont overlap with
+    # axisGeo, but they still overlap. It appears to be an issue from axisGeo function
+  } else if (tipnum == 3){
+    oma1 <- 8
+  } else if (tipnum == 4){
+    oma1 <- 7
+  } else if (tipnum >= 5 & tipnum <= 7){
+    oma1 <- 6
+  } else if (tipnum >= 8 & tipnum <= 10){
+    oma1 <- 5
+  } else {
+    oma1 <- 4
+  }
+  oma1
+}
+tree.height <- function(tree){
+  tipnum <- ape::Ntip(tree)
+  if(tipnum > 10){
+    hei <- 50 + (30 * tipnum)
+  } else {
+    hei <- 300
+  }
+  hei
+}
+
 #from http://stackoverflow.com/questions/32872222/how-do-you-pass-parameters-to-a-shiny-app-via-url
 
 # example: 127.0.0.1:5767/?symbol=BBB,AAA,CCC,DDD&date_start=2005-01-02&period_select=2&smaLen=153&usema=1
@@ -106,7 +135,6 @@ shinyServer(function(input, output, session) {
        # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
      ape::plot.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
        x.lim = c(0, max.depth), root.edge = TRUE)
-     data("strat2012", package = "phyloch")
      phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
        col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
        gridty = "twodash")
@@ -131,7 +159,6 @@ shinyServer(function(input, output, session) {
       ape::plot.phylo(sdm.tree, cex = 1.5,
         edge.width = 2, label.offset = 0.5, x.lim = c(0, max.depth), root.edge = TRUE)
       mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(sdm.tree) - 1, outer = TRUE)
-      data("strat2012", package = "phyloch")
       phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
         col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
         gridty = "twodash")
@@ -240,7 +267,6 @@ shinyServer(function(input, output, session) {
              ape::plot.phylo(tree, cex = 1.5,
                edge.width = 2, label.offset = 0.5, x.lim = c(0, max.depth), root.edge = TRUE)
              mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(tree) - 1, outer = TRUE)
-             data("strat2012", package = "phyloch")
              phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
                col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
                gridty = "twodash")
