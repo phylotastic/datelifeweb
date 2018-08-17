@@ -11,8 +11,8 @@ library(phyloch)
 
 shinyServer(function(input, output, session) {
 
-data(contributorcache)
-data(treebasecache)
+utils::data(contributorcache)
+utils::data(treebasecache)
  output$authors<- renderDataTable(author.pretty, options = list(lengthMenu = list(c(25, 50, 100,-1), c("25", "50", "100", "All")) , order = list(1, 'desc')))
  output$curators<- renderDataTable(curator.pretty, options = list(lengthMenu = list(c(25, 50, 100,-1), c("25", "50", "100", "All")), order = list(1, 'desc')))
  output$tbauthors<- renderDataTable(tb.author.pretty, options = list(lengthMenu = list(c(25, 50, 100,-1), c("25", "50", "100", "All")) , order = list(1, 'desc')))

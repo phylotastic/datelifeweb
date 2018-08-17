@@ -9,6 +9,7 @@ Goals
     * List of names
     * Topology
     * Tree with branch lengths
+    * in all cases names can correspond to species or higher-taxon names
 * They get back one of
     * A single chronogram
         * With matching taxa only (done)
