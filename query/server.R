@@ -135,9 +135,9 @@ shinyServer(function(input, output, session) {
        # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
      ape::plot.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
        x.lim = c(0, max.depth), root.edge = TRUE)
-     # phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
-     #   col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
-     #   gridty = "twodash")
+     phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
+       col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
+       gridty = "twodash")
      mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(median.tree) - 1, outer = TRUE)
      }, height = function(){
            tree <- get.consensus.tree()
