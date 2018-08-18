@@ -101,184 +101,184 @@ shinyServer(function(input, output, session) {
     summ.table <- reactive({
        summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "data_frame", partial = input$partial)
     })
-
-    max.tree.age <- reactive({
-      x <- list(get.consensus.tree())
-      x <- c(x, list(get.sdm.tree()))
-      x <- c(x, get.all.trees())
-      max.age <- round(max(unlist(sapply(x, ape::branching.times))) + 5, digits = -1)
-      max.age
-    })
-
-    max.tip.label <- reactive({
-      x <- list(get.consensus.tree())
-      x <- c(x, list(get.sdm.tree()))
-      x <- c(x, get.all.trees())
-      tip.label.length <- unique(unlist(sapply(x, "[", "tip.label")))
-      ind <- which.max(nchar(tip.label.length))
-      nchar(tip.label.length[ind])  # use strWidth?
-    })
-
-    output$age <- renderTable({
-       summ.table()
-    })
-
-   output$medianPlot <- renderPlot({
-     mar.tips <- max.tip.label() * 0.6  # to control the margin on the side of tip labels
-     median.tree <- get.consensus.tree()
-     max.depth <- max.tree.age()
-     median.tree$root.edge <- max.depth - max(ape::branching.times(median.tree))
-     par(xpd = TRUE)
-     par(oma = c(oma1_f(median.tree),0,0,0))  #
-     par(mar = c(2,0,2,mar.tips))
-     # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
-       # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
-     ape::plot.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
-       x.lim = c(0, max.depth), root.edge = TRUE)
-     phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
-       col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
-       gridty = "twodash")
-     mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(median.tree) - 1, outer = TRUE)
-     }, height = function(){
-           tree <- get.consensus.tree()
-           hei <- tree.height(tree)
-           hei
-        }
-    )
-
-    output$sdmPlot <- renderPlot({
-      mar.tips <- max.tip.label() * 0.6
-      sdm.tree <- get.sdm.tree()
-      max.depth <- max.tree.age()
-      sdm.tree$root.edge <- max.depth - max(ape::branching.times(sdm.tree))
-      par(xpd = TRUE)
-      par(oma = c(oma1_f(sdm.tree),0,0,0))  #
-      par(mar = c(2,0,2,mar.tips))
-      # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
-        # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
-      ape::plot.phylo(sdm.tree, cex = 1.5,
-        edge.width = 2, label.offset = 0.5, x.lim = c(0, max.depth), root.edge = TRUE)
-      mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(sdm.tree) - 1, outer = TRUE)
-      phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
-        col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
-        gridty = "twodash")
-      }, height = function(){
-            tree <- get.sdm.tree()
-            hei <- tree.height(tree)
-            hei
-         }
-     )
-
-    #  output$densiTreePlotSome <- renderPlot({
-    #     all.trees <- get.all.trees()
-    #     mar.tips <- max.tip.label() * 0.6
-    #     par(xpd = TRUE)
-    #     par(oma = c(4,0,0,0))  #
-    #     # par(mai = c(1,1,1,2))
-    #     par(mar = c(2,0,2,0))
-    #     max.depth <- max.tree.age()
-    #     all.trees <- lapply(all.trees, function(x) {
-    #         x$root.edge <- max.depth - max(ape::branching.times(x))
-    #         x
-    #       }
-    #     )
-    #     # densiTree function only works with trees with more than two tips when consensus tree is not provided
-    #     # so we did our own function in datelife:
-    #     plot_densitree(trees = all.trees, include_all = FALSE, cex = 1.5, edge.width = 2, label.offset = 0.01)
-    #     mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 2, outer = TRUE)
-    #   }, height = function(){
-    #     tree <- get.consensus.tree()
-    #     hei <- tree.height(tree)
-    #     hei
-    #   }
-    # )
-
-    output$densiTreePlotAll <- renderPlot({
-       all.trees <- get.all.trees()
-       mar.tips <- max.tip.label() * 0.6
-       par(xpd = TRUE)
-       par(oma = c(4,0,0,0))  #
-       # par(mai = c(1,1,1,2))
-       par(mar = c(2,0,2,0))
-       max.depth <- max.tree.age()
-       all.trees <- lapply(all.trees, function(x) {
-           x$root.edge <- max.depth - max(ape::branching.times(x))
-           x
-         }
-       )
-       # densiTree function only works with trees with more than two tips when consensus tree is not provided
-       # so we did our own function in datelife:
-       plot_densitree(trees = all.trees, include_all = TRUE, cex = 1.5, edge.width = 2, label.offset = 0.01)
-       mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 2, outer = TRUE)
-     }, height = function(){
-       tree <- get.consensus.tree()
-       hei <- tree.height(tree)
-       hei
-     }
-   )
-
-   # callModule(studyPlot, "name", tree.index = 1)  # tried with modules,
-   #but couldn't make it work. Need to think more about it. I found the following
-   # work around for now from https://gist.github.com/wch/5436415/:
-   output$allPlots <- renderUI({
-     plot_output_list <- vector(mode = "list")
-     for (i in 1:length(get.all.trees())){
-       plottitlename <- paste0("plot_title", i)
-       plot_output_list <- c(plot_output_list, list(h4(textOutput(plottitlename))))
-       plotname <- paste0("plot", i)
-       plot_output_list <- c(plot_output_list, list(withSpinner(ui_element = plotOutput(plotname, height = "auto"), type = 4)))
-       plot_output_list <- c(plot_output_list, list(br()), list(br()), list(br()))  # three blank rows between plots
-     }
-     # Convert the list to a tagList - this is necessary for the list of items
-     # to display properly.
-     do.call(tagList, plot_output_list)
-   })
-   # Call renderPlot for each one. Plots are only actually generated when they
-   # are visible on the web page.
-   i <- 1
-   max_n <- 10
-   while (i < max_n) {
-     # Need local so that each item gets its own number. Without it, the value
-     # of i in the renderPlot() will be the same across all instances, because
-     # of when the expression is evaluated.
-     local({
-       my_i <- i  # this is important
-       plotname <- paste("plot", my_i, sep="")
-       plottitlename <- paste0("plot_title", my_i)
-       output[[plottitlename]] <- renderText({
-         names(get.all.trees())[my_i]
-         # paste("plot_", i)
-       })
-       output[[plotname]] <- renderPlot({
-         all.trees <- get.all.trees()
-         max_n <- length(all.trees)
-         tree <- all.trees[[my_i]]
-         max.depth <- max.tree.age()
-             mar.tips <- max.tip.label() * 0.6
-             par(xpd = TRUE)
-             par(oma = c(oma1_f(tree), 0, 0, 0))  #
-             par(mar = c(2, 0, 2, mar.tips))
-             # max.depth <- max.tree.age()
-             # tree <- get.all.trees()[[1]]
-             tree$root.edge <- max.depth - max(ape::branching.times(tree))
-             # tip.label.area <- max.tip.label()
-             # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
-               # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
-             ape::plot.phylo(tree, cex = 1.5,
-               edge.width = 2, label.offset = 0.5, x.lim = c(0, max.depth), root.edge = TRUE)
-             mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(tree) - 1, outer = TRUE)
-             phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
-               col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
-               gridty = "twodash")
-         }, height = function(){
-               all.trees <- get.all.trees()
-               tree <- all.trees[[my_i]]
-               hei <- tree.height(tree)
-               hei
-           })
-     })
-     i <- i + 1
-   }
+   #
+   #  max.tree.age <- reactive({
+   #    x <- list(get.consensus.tree())
+   #    x <- c(x, list(get.sdm.tree()))
+   #    x <- c(x, get.all.trees())
+   #    max.age <- round(max(unlist(sapply(x, ape::branching.times))) + 5, digits = -1)
+   #    max.age
+   #  })
+   #
+   #  max.tip.label <- reactive({
+   #    x <- list(get.consensus.tree())
+   #    x <- c(x, list(get.sdm.tree()))
+   #    x <- c(x, get.all.trees())
+   #    tip.label.length <- unique(unlist(sapply(x, "[", "tip.label")))
+   #    ind <- which.max(nchar(tip.label.length))
+   #    nchar(tip.label.length[ind])  # use strWidth?
+   #  })
+   #
+   #  output$age <- renderTable({
+   #     summ.table()
+   #  })
+   #
+   # output$medianPlot <- renderPlot({
+   #   mar.tips <- max.tip.label() * 0.6  # to control the margin on the side of tip labels
+   #   median.tree <- get.consensus.tree()
+   #   max.depth <- max.tree.age()
+   #   median.tree$root.edge <- max.depth - max(ape::branching.times(median.tree))
+   #   par(xpd = TRUE)
+   #   par(oma = c(oma1_f(median.tree),0,0,0))  #
+   #   par(mar = c(2,0,2,mar.tips))
+   #   # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
+   #     # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
+   #   ape::plot.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
+   #     x.lim = c(0, max.depth), root.edge = TRUE)
+   #   phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
+   #     col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
+   #     gridty = "twodash")
+   #   mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(median.tree) - 1, outer = TRUE)
+   #   }, height = function(){
+   #         tree <- get.consensus.tree()
+   #         hei <- tree.height(tree)
+   #         hei
+   #      }
+   #  )
+   #
+   #  output$sdmPlot <- renderPlot({
+   #    mar.tips <- max.tip.label() * 0.6
+   #    sdm.tree <- get.sdm.tree()
+   #    max.depth <- max.tree.age()
+   #    sdm.tree$root.edge <- max.depth - max(ape::branching.times(sdm.tree))
+   #    par(xpd = TRUE)
+   #    par(oma = c(oma1_f(sdm.tree),0,0,0))  #
+   #    par(mar = c(2,0,2,mar.tips))
+   #    # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
+   #      # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
+   #    ape::plot.phylo(sdm.tree, cex = 1.5,
+   #      edge.width = 2, label.offset = 0.5, x.lim = c(0, max.depth), root.edge = TRUE)
+   #    mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(sdm.tree) - 1, outer = TRUE)
+   #    phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
+   #      col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
+   #      gridty = "twodash")
+   #    }, height = function(){
+   #          tree <- get.sdm.tree()
+   #          hei <- tree.height(tree)
+   #          hei
+   #       }
+   #   )
+   #
+   #  #  output$densiTreePlotSome <- renderPlot({
+   #  #     all.trees <- get.all.trees()
+   #  #     mar.tips <- max.tip.label() * 0.6
+   #  #     par(xpd = TRUE)
+   #  #     par(oma = c(4,0,0,0))  #
+   #  #     # par(mai = c(1,1,1,2))
+   #  #     par(mar = c(2,0,2,0))
+   #  #     max.depth <- max.tree.age()
+   #  #     all.trees <- lapply(all.trees, function(x) {
+   #  #         x$root.edge <- max.depth - max(ape::branching.times(x))
+   #  #         x
+   #  #       }
+   #  #     )
+   #  #     # densiTree function only works with trees with more than two tips when consensus tree is not provided
+   #  #     # so we did our own function in datelife:
+   #  #     plot_densitree(trees = all.trees, include_all = FALSE, cex = 1.5, edge.width = 2, label.offset = 0.01)
+   #  #     mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 2, outer = TRUE)
+   #  #   }, height = function(){
+   #  #     tree <- get.consensus.tree()
+   #  #     hei <- tree.height(tree)
+   #  #     hei
+   #  #   }
+   #  # )
+   #
+   #  output$densiTreePlotAll <- renderPlot({
+   #     all.trees <- get.all.trees()
+   #     mar.tips <- max.tip.label() * 0.6
+   #     par(xpd = TRUE)
+   #     par(oma = c(4,0,0,0))  #
+   #     # par(mai = c(1,1,1,2))
+   #     par(mar = c(2,0,2,0))
+   #     max.depth <- max.tree.age()
+   #     all.trees <- lapply(all.trees, function(x) {
+   #         x$root.edge <- max.depth - max(ape::branching.times(x))
+   #         x
+   #       }
+   #     )
+   #     # densiTree function only works with trees with more than two tips when consensus tree is not provided
+   #     # so we did our own function in datelife:
+   #     plot_densitree(trees = all.trees, include_all = TRUE, cex = 1.5, edge.width = 2, label.offset = 0.01)
+   #     mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 2, outer = TRUE)
+   #   }, height = function(){
+   #     tree <- get.consensus.tree()
+   #     hei <- tree.height(tree)
+   #     hei
+   #   }
+   # )
+   #
+   # # callModule(studyPlot, "name", tree.index = 1)  # tried with modules,
+   # #but couldn't make it work. Need to think more about it. I found the following
+   # # work around for now from https://gist.github.com/wch/5436415/:
+   # output$allPlots <- renderUI({
+   #   plot_output_list <- vector(mode = "list")
+   #   for (i in 1:length(get.all.trees())){
+   #     plottitlename <- paste0("plot_title", i)
+   #     plot_output_list <- c(plot_output_list, list(h4(textOutput(plottitlename))))
+   #     plotname <- paste0("plot", i)
+   #     plot_output_list <- c(plot_output_list, list(withSpinner(ui_element = plotOutput(plotname, height = "auto"), type = 4)))
+   #     plot_output_list <- c(plot_output_list, list(br()), list(br()), list(br()))  # three blank rows between plots
+   #   }
+   #   # Convert the list to a tagList - this is necessary for the list of items
+   #   # to display properly.
+   #   do.call(tagList, plot_output_list)
+   # })
+   # # Call renderPlot for each one. Plots are only actually generated when they
+   # # are visible on the web page.
+   # i <- 1
+   # max_n <- 10
+   # while (i < max_n) {
+   #   # Need local so that each item gets its own number. Without it, the value
+   #   # of i in the renderPlot() will be the same across all instances, because
+   #   # of when the expression is evaluated.
+   #   local({
+   #     my_i <- i  # this is important
+   #     plotname <- paste("plot", my_i, sep="")
+   #     plottitlename <- paste0("plot_title", my_i)
+   #     output[[plottitlename]] <- renderText({
+   #       names(get.all.trees())[my_i]
+   #       # paste("plot_", i)
+   #     })
+   #     output[[plotname]] <- renderPlot({
+   #       all.trees <- get.all.trees()
+   #       max_n <- length(all.trees)
+   #       tree <- all.trees[[my_i]]
+   #       max.depth <- max.tree.age()
+   #           mar.tips <- max.tip.label() * 0.6
+   #           par(xpd = TRUE)
+   #           par(oma = c(oma1_f(tree), 0, 0, 0))  #
+   #           par(mar = c(2, 0, 2, mar.tips))
+   #           # max.depth <- max.tree.age()
+   #           # tree <- get.all.trees()[[1]]
+   #           tree$root.edge <- max.depth - max(ape::branching.times(tree))
+   #           # tip.label.area <- max.tip.label()
+   #           # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
+   #             # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
+   #           ape::plot.phylo(tree, cex = 1.5,
+   #             edge.width = 2, label.offset = 0.5, x.lim = c(0, max.depth), root.edge = TRUE)
+   #           mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(tree) - 1, outer = TRUE)
+   #           phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
+   #             col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
+   #             gridty = "twodash")
+   #       }, height = function(){
+   #             all.trees <- get.all.trees()
+   #             tree <- all.trees[[my_i]]
+   #             hei <- tree.height(tree)
+   #             hei
+   #         })
+   #   })
+   #   i <- i + 1
+   # }
 
    output$downloadCSV <- downloadHandler(
      filename = "DatelifeTable.csv",
