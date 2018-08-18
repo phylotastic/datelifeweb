@@ -3,7 +3,7 @@ library(shiny)
 shinyUI(fluidPage(
   h2("Cite DateLife"),
   p('DateLife publications, R package and web page citations'),
-  downloadLink('downloadDateLifeCitations', 'Download DateLife citations as a table in csv format'),
+  downloadLink('downloadDateLifeCitations', 'Download table in csv format'),
   br(),
   # downloadLink('downloadDateLifeReferencesBib', 'Download DateLife references in bib format'),
   # br(),
@@ -11,7 +11,7 @@ shinyUI(fluidPage(
   br(),
   br(),
   h2("Primary Studies Citations"),
-  downloadLink('downloadcitationCSV', 'Download primary studies citations as a table in csv format'),
+  downloadLink('downloadcitationCSV', 'Download table in csv format'),
   br(),
   # downloadLink('downloadReferencesBib', 'Download references in bib format'),
   # br(),
