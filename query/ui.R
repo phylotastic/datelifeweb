@@ -30,7 +30,7 @@ shinyUI(fluidPage(
    FALSE, width = text_width),
    br(),
 
-   h1("DateLife Results, yay!"),
+   h1("DateLife Results"),
    # h3("Downloads"),
    # downloadLink('downloadCSV', 'Table in csv format, including Newick of trees'),
    # br(),
