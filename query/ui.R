@@ -87,10 +87,10 @@ shinyUI(fluidPage(
         p("All chronograms"),
         shinycssloaders::withSpinner(ui_element = plotOutput("densiTreePlotAll", height = "auto"), type = 4),
         br(),
-        # br(),
-        # h2("Individual plots"),  # subset
-        # br(),
-        # withSpinner(ui_element = uiOutput("allPlots"), type = 4),
+        br(),
+        h2("Individual plots"),  # subset
+        br(),
+        withSpinner(ui_element = uiOutput("allPlots"), type = 4),
         br()
       ),
       tabPanel(h4("Downloads"), br(),

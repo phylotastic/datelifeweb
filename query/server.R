@@ -197,6 +197,65 @@ shinyServer(function(input, output, session) {
      }
    )
 
+   output$allPlots <- renderUI({
+     plot_output_list <- vector(mode = "list")
+     for ( i in 1:length(get.all.trees()) ){ 
+       plottitlename <- paste0("plot_title", i)
+       plot_output_list <- c(plot_output_list, list(h4(textOutput(plottitlename))))
+       plotname <- paste0("plot", i)
+       plot_output_list <- c(plot_output_list, list(withSpinner(ui_element = plotOutput(plotname, height = "auto"), type = 4)))
+       plot_output_list <- c(plot_output_list, list(br()), list(br()), list(br()))  # three blank rows between plots
+     }
+     # Convert the list to a tagList - this is necessary for the list of items
+     # to display properly.
+     # Call renderPlot for each one. Plots are only actually generated when they
+     # are visible on the web page.
+     i <- 1
+     max_n <- length(get.all.trees())
+     while (i < max_n) {
+       # Need local so that each item gets its own number. Without it, the value
+       # of i in the renderPlot() will be the same across all instances, because
+       # of when the expression is evaluated.
+       local({
+         my_i <- i  # this is important
+         plotname <- paste("plot", my_i, sep="")
+         plottitlename <- paste0("plot_title", my_i)
+         output[[plottitlename]] <- renderText({
+           names(get.all.trees())[my_i]
+           # paste("plot_", i)
+         })
+         output[[plotname]] <- renderPlot({
+           all.trees <- get.all.trees()
+           max_n <- length(all.trees)
+           tree <- all.trees[[my_i]]
+           max.depth <- max.tree.age()
+               mar.tips <- max.tip.label() * 0.6
+               par(xpd = TRUE)
+               par(oma = c(oma1_f(tree), 0, 0, 0))  #
+               par(mar = c(2, 0, 2, mar.tips))
+               # max.depth <- max.tree.age()
+               # tree <- get.all.trees()[[1]]
+               tree$root.edge <- max.depth - max(ape::branching.times(tree))
+               # tip.label.area <- max.tip.label()
+               # plot_chronogram.phylo(median.tree, cex = 1.5, edge.width = 2, label.offset = 0.5,
+                 # x.lim = c(0, max.depth), root.edge = TRUE, root.edge.color = "white")
+               ape::plot.phylo(tree, cex = 1.5,
+                 edge.width = 2, label.offset = 0.5, x.lim = c(0, max.depth), root.edge = TRUE)
+               mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(tree) - 1, outer = TRUE)
+               phyloch::axisGeo(GTS = strat2012, unit = c("period","epoch"),
+                 col = c("gray80", "white"), gridcol = c("gray80", "white"), cex = 1.5,
+                 gridty = "twodash")
+           }, height = function(){
+                 all.trees <- get.all.trees()
+                 tree <- all.trees[[my_i]]
+                 hei <- tree.height(tree)
+                 hei
+             })
+       })
+       i <- i + 1
+     }
+     do.call(tagList, plot_output_list)
+   })
 
    output$downloadCSV <- downloadHandler(
      filename = "DatelifeTable.csv",
