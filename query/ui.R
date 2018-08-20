@@ -2,7 +2,7 @@ library(shiny)
 library(shinycssloaders)
 # source("allplots.R")
 text_width <- "100%"
-
+options(shiny.sanitize.errors = FALSE)
 shinyUI(fluidPage(
   # work around textAreaInput not spanning 100% of webpage when width = 100%
   tags$style(HTML("
