@@ -211,7 +211,7 @@ shinyServer(function(input, output, session) {
      # are visible on the web page.
      i <- 1
      max_n <- length(get.all.trees())
-     while (i < max_n) {
+     for (i in 1:max_n) {
        # Need local so that each item gets its own number. Without it, the value
        # of i in the renderPlot() will be the same across all instances, because
        # of when the expression is evaluated.
