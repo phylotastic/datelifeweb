@@ -249,9 +249,9 @@ shinyServer(function(input, output, session) {
                  tree <- all.trees[[my_i]]
                  hei <- tree.height(tree)
                  hei
-             })
+             }
+          )
        })
-       i <- i + 1
      }
      do.call(tagList, plot_output_list)
    })
