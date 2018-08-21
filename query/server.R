@@ -76,7 +76,6 @@ shinyServer(function(input, output, session) {
        summ.table()
     })
 
-
     get.consensus.tree <- reactive({
        temp.tree <- summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "phylo_median")
        temp.tree$root.time <- max(ape::branching.times(temp.tree))
@@ -199,7 +198,7 @@ shinyServer(function(input, output, session) {
 
    output$allPlots <- renderUI({
      plot_output_list <- vector(mode = "list")
-     for ( i in 1:length(get.all.trees()) ){ 
+     for ( i in 1:length(get.all.trees()) ){
        plottitlename <- paste0("plot_title", i)
        plot_output_list <- c(plot_output_list, list(h4(textOutput(plottitlename))))
        plotname <- paste0("plot", i)
@@ -284,4 +283,10 @@ shinyServer(function(input, output, session) {
        write(unique(summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "citations")), file = file)
      }
    )
+
+   outputOptions(output, "age", suspendWhenHidden = FALSE)
+   outputOptions(output, "medianPlot", suspendWhenHidden = FALSE)
+   outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE)
+   outputOptions(output, "densiTreePlotAll", suspendWhenHidden = FALSE)
+   outputOptions(output, "allPlots", suspendWhenHidden = FALSE)
 })
