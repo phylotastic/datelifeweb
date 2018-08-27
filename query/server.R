@@ -1,28 +1,30 @@
 
-#from http://stackoverflow.com/questions/32872222/how-do-you-pass-parameters-to-a-shiny-app-via-url
-
+# from http://stackoverflow.com/questions/32872222/how-do-you-pass-parameters-to-a-shiny-app-via-url
+# we actually do not need that, the input will be automatically updated
 # example: 127.0.0.1:5767/?symbol=BBB,AAA,CCC,DDD&date_start=2005-01-02&period_select=2&smaLen=153&usema=1
 
 
 shinyServer(function(input, output, session) {
-      observe({
-          query <- parseQueryString(session$clientData$url_search)
+      # rv <- reactiveValues(input_taxa = isolate({input$taxa}))
+      # observeEvent(input$refresh, {
+      #     query <- parseQueryString(session$clientData$url_search)
+      #
+      #     for (i in 1:(length(reactiveValuesToList(input)))) {
+      #       nameval = names(reactiveValuesToList(input)[i])
+      #       valuetoupdate = query[[nameval]]
+      #       if (!is.null(valuetoupdate)) {
+      #         if (is.na(as.numeric(valuetoupdate))) {
+      #           updateTextInput(taxa, nameval, value = valuetoupdate)
+      #         }
+      #         else {
+      #           updateTextInput(taxa, nameval, value = as.numeric(valuetoupdate))
+      #         }
+      #       }
+      #     }
+      #     rv$input_taxa <- input$taxa
+      # })
 
-          for (i in 1:(length(reactiveValuesToList(input)))) {
-            nameval = names(reactiveValuesToList(input)[i])
-            valuetoupdate = query[[nameval]]
-            if (!is.null(query[[nameval]])) {
-              if (is.na(as.numeric(valuetoupdate))) {
-                updateTextInput(taxa, nameval, value = valuetoupdate)
-              }
-              else {
-                updateTextInput(taxa, nameval, value = as.numeric(valuetoupdate))
-              }
-            }
-          }
-      })
-
-      get.filtered.results <- reactive({get_datelife_result(input = input$taxa,
+      get.filtered.results <- reactive({get_datelife_result(input = input$taxa, #rv$input_taxa,
          partial = input$partial, use_tnrs = input$usetnrs,
          approximate_match = input$approximatematch,
          get_spp_from_taxon = input$highertaxon)

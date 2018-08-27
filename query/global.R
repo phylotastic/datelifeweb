@@ -7,6 +7,7 @@ library(ape)
 library(phyloch)
 options(shiny.sanitize.errors = FALSE)
 # devtools::load_all("~/Desktop/datelife")
+text_width <- "100%"
 utils::data(opentree_chronograms)
 utils::data("strat2012", package = "phyloch")
 # source("allplots.R")
