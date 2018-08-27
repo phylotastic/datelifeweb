@@ -1,6 +1,3 @@
-library(shiny)
-library(shinycssloaders)
-# source("allplots.R")
 text_width <- "100%"
 options(shiny.sanitize.errors = FALSE)
 shinyUI(fluidPage(
@@ -14,7 +11,7 @@ shinyUI(fluidPage(
   # textInput does not allow controlling height of box, use textAreaInput instead
   textAreaInput("taxa", "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format, make sure to end with a semicolon)",
   "Rhea americana, Pterocnemia pennata, Struthio camelus", width = text_width, height = "auto"),
-  # submitButton(text = " Refresh DateLife"),
+  # submitButton(text = " Refresh DateLife"),  # is not recommended by RStudio devs anymore. It does what I want, but has a weird behaviour.
   actionButton(inputId = "run", label = " Refresh DateLife",
     class = "btn btn-primary", #icon = icon("paper-plane"), #"search" is a magnifier, "paper-plane" is also cool, maybe for submit or send.
     # style="color: #fff; background-color: #337ab7; border-color: #2e6da4"), #color: is for letters
@@ -68,10 +65,10 @@ shinyUI(fluidPage(
             # position:absolute;
             bottom:0;
             width:100%;
-            height:50px;   /* Height of the footer */
-            color: white;
-            padding: 8px;
-            background-color: #4975B1;
+            height:35px;   /* Height of the footer */
+            color: gray;
+            padding: 7px;
+            background-color: #4975B198;
             z-index: 1000;")
 
 ))

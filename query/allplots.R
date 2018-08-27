@@ -27,3 +27,43 @@ tree.height <- function(tree){
   }
   hei
 }
+
+reactive({
+    rv$summ.table <- summarize_datelife_result(datelife_result = rv$get.filtered.results,
+    summary_format = "data_frame")
+    rv$get.median.tree <- summarize_datelife_result(datelife_result = rv$get.filtered.results,
+        summary_format = "phylo_median")
+    rv$get.median.tree$root.time <- max(ape::branching.times(rv$get.median.tree))
+
+    rv$get.sdm.tree <- summarize_datelife_result(datelife_result = rv$get.filtered.results,
+        summary_format = "phylo_sdm")
+    rv$get.sdm.tree$root.time <- max(ape::branching.times(rv$get.sdm.tree))
+
+    noisy.trees <- summarize_datelife_result(datelife_result = rv$get.filtered.results,
+        summary_format = "phylo_all")
+    tree.vector <- c()
+    tree.vector.names <- c()
+    for (i in sequence(length(noisy.trees))) {
+      if(class(noisy.trees[[i]]) == "phylo") {
+        if(length(tree.vector) > 0) {
+          tree.vector <- ape::c.phylo(tree.vector, noisy.trees[[i]])
+          tree.vector.names <- c(tree.vector.names, names(noisy.trees)[i])
+        } else {
+          tree.vector <- ape::c.phylo(noisy.trees[[i]])
+          tree.vector.names <- names(noisy.trees)[i]
+        }
+      }
+    }
+    names(tree.vector) <- tree.vector.names
+    rv$get.all.trees <- tree.vector
+
+    rv$max.tree.age <- round(max(unlist(sapply(
+      c(list(rv$get.median.tree), list(rv$get.sdm.tree), rv$get.all.trees),
+      ape::branching.times))) + 5, digits = -1)
+
+    tip.label.length <- unique(unlist(sapply(
+      c(list(rv$get.median.tree), list(rv$get.sdm.tree), rv$get.all.trees),
+      "[", "tip.label")))
+    ind <- which.max(nchar(tip.label.length))
+    rv$max.tip.label <- nchar(tip.label.length[ind])  # use strWidth?
+})
