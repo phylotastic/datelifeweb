@@ -18,7 +18,7 @@ oma1_f <- function(tree){
   }
   oma1
 }
-tree.height <- function(tree){
+tree_plot_height <- function(tree){
   tipnum <- ape::Ntip(tree)
   if(tipnum > 10){
     hei <- 50 + (30 * tipnum)

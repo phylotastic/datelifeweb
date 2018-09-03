@@ -5,37 +5,45 @@
 
 
 shinyServer(function(input, output, session) {
-      # rv <- reactiveValues(input_taxa = isolate({input$taxa}))
-      # observeEvent(input$refresh, {
-      #     query <- parseQueryString(session$clientData$url_search)
-      #
-      #     for (i in 1:(length(reactiveValuesToList(input)))) {
-      #       nameval = names(reactiveValuesToList(input)[i])
-      #       valuetoupdate = query[[nameval]]
-      #       if (!is.null(valuetoupdate)) {
-      #         if (is.na(as.numeric(valuetoupdate))) {
-      #           updateTextInput(taxa, nameval, value = valuetoupdate)
-      #         }
-      #         else {
-      #           updateTextInput(taxa, nameval, value = as.numeric(valuetoupdate))
-      #         }
-      #       }
-      #     }
-      #     rv$input_taxa <- input$taxa
-      # })
+  output$dimension_display <- renderText({
+      paste(input$dimension[1], input$dimension[2], input$dimension[2]/input$dimension[1])
+  })
+      rv <- reactiveValues(input_taxa = isolate({input$taxa}),
+                          input_partial = isolate({input$partial}),
+                          input_usetnrs = isolate({input$usetnrs}),
+                          input_approximatematch = isolate({input$approximatematch}),
+                          input_highertaxon = isolate({input$highertaxon}))
 
-      get.filtered.results <- reactive({get_datelife_result(input = input$taxa, #rv$input_taxa,
-         partial = input$partial, use_tnrs = input$usetnrs,
-         approximate_match = input$approximatematch,
-         get_spp_from_taxon = input$highertaxon)
+      observeEvent(input$refresh, {
+          query <- parseQueryString(session$clientData$url_search)
+
+          for (i in 1:(length(reactiveValuesToList(input)))) {
+            nameval = names(reactiveValuesToList(input)[i])
+            valuetoupdate = query[[nameval]]
+            if (!is.null(valuetoupdate)) {
+              if (is.na(as.numeric(valuetoupdate))) {
+                updateTextInput(taxa, nameval, value = valuetoupdate)
+              }
+              else {
+                updateTextInput(taxa, nameval, value = as.numeric(valuetoupdate))
+              }
+            }
+          }
+          rv$input_taxa <- input$taxa
+          rv$input_partial <- input$partial
+          rv$input_usetnrs <- input$usetnrs
+          rv$input_approximatematch <- input$approximatematch
+          rv$input_highertaxon <- input$highertaxon
+      })
+
+      get.filtered.results <- reactive({get_datelife_result(input = rv$input_taxa,  #input$taxa,
+         partial = rv$input_partial, use_tnrs = rv$input_usetnrs,
+         approximate_match = rv$input_approximatematch,
+         get_spp_from_taxon = rv$input_highertaxon)
       })
 
       summ.table <- reactive({
-         datelife::summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "data_frame", partial = input$partial)
-      })
-
-      output$age <- renderTable({
-         summ.table()
+         datelife::summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "data_frame", partial = rv$input_partial)
       })
 
       get.median.tree <- reactive({
@@ -70,9 +78,8 @@ shinyServer(function(input, output, session) {
       })
 
       max.tree.age <- reactive({
-        max.age <- round(max(unlist(sapply(
-          c(list(get.median.tree()), list(get.sdm.tree()), get.all.trees()),
-          ape::branching.times))) + 5, digits = -1)
+        max.age <- round(max(summarize_datelife_result(datelife_result = get.filtered.results(),
+            summary_format = "mrca")) + 5, digits = -1)
         max.age
       })
 
@@ -104,9 +111,9 @@ shinyServer(function(input, output, session) {
           mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(median.tree) - 1, outer = TRUE)
           }, height = function(){
                tree <- get.median.tree()
-               hei <- tree.height(tree)
+               hei <- tree_plot_height(tree)
                hei
-          }
+          }, width = function() 0.9 * input$dimension[1]
       )
 
       output$sdmPlot <- renderPlot({
@@ -127,7 +134,7 @@ shinyServer(function(input, output, session) {
             gridty = "twodash")
           }, height = function(){
                 tree <- get.sdm.tree()
-                hei <- tree.height(tree)
+                hei <- tree_plot_height(tree)
                 hei
           }
        )
@@ -150,7 +157,7 @@ shinyServer(function(input, output, session) {
           mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = 2, outer = TRUE)
           }, height = function(){
                 tree <- get.median.tree()
-                hei <- tree.height(tree)
+                hei <- tree_plot_height(tree)
                 hei
           }
       )
@@ -200,7 +207,7 @@ shinyServer(function(input, output, session) {
                    }, height = function(){
                          all.trees <- get.all.trees()
                          tree <- all.trees[[my_i]]
-                         hei <- tree.height(tree)
+                         hei <- tree_plot_height(tree)
                          hei
                    })
               })
