@@ -34,7 +34,12 @@ shinyServer(function(input, output, session) {
       # wait one second after modifying window to update plot width value
       tree_plot_wid <- reactive({
         input$dimension[1] * 0.95
-      }) %>% debounce(1000)
+      }) %>% debounce(1000)  # requires stringr
+
+      # slightly slower:
+      # tree_plot_wid <- debounce(r = reactive({
+      #   input$dimension[1] * 0.95
+      # }), 1000)
 
       observeEvent(input$refresh, {
           query <- parseQueryString(session$clientData$url_search)

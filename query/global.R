@@ -5,6 +5,7 @@ library(strap)
 library(phangorn)
 library(ape)
 library(phyloch)
+library(stringr)
 options(shiny.sanitize.errors = FALSE)
 # devtools::load_all("~/Desktop/datelife")
 text_width <- "100%"
