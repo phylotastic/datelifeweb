@@ -5,15 +5,11 @@
 
 
 shinyServer(function(input, output, session) {
-  output$dimension_display <- renderText({
-      paste(input$dimension[1], input$dimension[2], input$dimension[2]/input$dimension[1])
-  })
       rv <- reactiveValues(input_taxa = isolate(input$taxa),
                           input_partial = isolate(input$partial),
                           input_usetnrs = isolate(input$usetnrs),
                           input_approximatematch = isolate(input$approximatematch),
-                          input_highertaxon = isolate(input$highertaxon),
-                          input_dim1 = isolate(input$dimension[1])#, redraw = FALSE
+                          input_highertaxon = isolate(input$highertaxon) #, input_dim1 = NULL #, redraw = FALSE
                           )
 
       # from https://stackoverflow.com/questions/31051133/how-do-i-make-sure-that-a-shiny-reactive-plot-only-changes-once-all-other-reacti
@@ -33,13 +29,18 @@ shinyServer(function(input, output, session) {
 
       # wait one second after modifying window to update plot width value
       tree_plot_wid <- reactive({
-        input$dimension[1] * 0.95
-      }) %>% debounce(1000)  # requires stringr
+        input$dimension[1] * 0.97
+      })
+
+      tree_plot_wid_d <- tree_plot_wid %>% debounce(1000)  # requires stringr
+      # tree_plot_wid_t <- tree_plot_wid %>% throttle(1000)  # requires stringr
 
       # slightly slower:
       # tree_plot_wid <- debounce(r = reactive({
       #   input$dimension[1] * 0.95
       # }), 1000)
+
+      # rv$input_dim1 <- isolate(tree_plot_wid())
 
       observeEvent(input$refresh, {
           query <- parseQueryString(session$clientData$url_search)
@@ -61,9 +62,8 @@ shinyServer(function(input, output, session) {
           rv$input_usetnrs <- input$usetnrs
           rv$input_approximatematch <- input$approximatematch
           rv$input_highertaxon <- input$highertaxon
+          rv$input_dim1 <- input$dimension[1] * 0.97
       })
-
-
 
       get.filtered.results <- reactive({get_datelife_result(input = rv$input_taxa,  #input$taxa,
          partial = rv$input_partial, use_tnrs = rv$input_usetnrs,
@@ -143,7 +143,7 @@ shinyServer(function(input, output, session) {
                hei <- tree_plot_height(tree)
                hei
           }, width = function() {
-               wid <- tree_plot_wid() # in pixels # function() 0.9 * isolate({input$dimension[1]})
+               tree_plot_wid_d() #
           }
       )
 
@@ -167,7 +167,9 @@ shinyServer(function(input, output, session) {
                 tree <- get.sdm.tree()
                 hei <- tree_plot_height(tree)
                 hei
-          }, width = 900
+          }, width = function() {
+               tree_plot_wid_d() #
+          }
        )
 
       output$densiTreePlotAll <- renderPlot({
@@ -190,6 +192,8 @@ shinyServer(function(input, output, session) {
                 tree <- get.median.tree()
                 hei <- tree_plot_height(tree)
                 hei
+          }, width = function() {
+               tree_plot_wid_d() #
           }
       )
 
@@ -210,10 +214,10 @@ shinyServer(function(input, output, session) {
           max_n <- length(get.all.trees())
           for (i in 1:max_n) {
           # Need local so that each item gets its own number. Without it, the value
-          # of i in the renderPlot() will be the same across all instances, because
-          # of when the expression is evaluated.
+          # of i in the renderPlot() will be the same across all instances, due to
+          # expression evaluation.
               local({
-                   my_i <- i  # this is important
+                   my_i <- i  # this is important, otherwise the i is overwritten (always 1)
                    plotname <- paste("plot", my_i, sep="")
                    plottitlename <- paste0("plot_title", my_i)
                    output[[plottitlename]] <- renderText({
@@ -240,6 +244,8 @@ shinyServer(function(input, output, session) {
                          tree <- all.trees[[my_i]]
                          hei <- tree_plot_height(tree)
                          hei
+                   }, width = function() {
+                        tree_plot_wid_d() #
                    })
               })
           }
@@ -274,8 +280,14 @@ shinyServer(function(input, output, session) {
               summary_format = "citations")), file = file)
           }
       )
-      outputOptions(output, "medianPlot", suspendWhenHidden = FALSE)
-      outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE)
-      # outputOptions(output, "densiTreePlotAll", suspendWhenHidden = FALSE)
-      # outputOptions(output, "allPlots", suspendWhenHidden = FALSE)
+      outputOptions(output, "medianPlot", suspendWhenHidden = FALSE, priority = 3)
+      outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE, priority = 4)
+      outputOptions(output, "densiTreePlotAll", suspendWhenHidden = FALSE, priority = 2)
+      outputOptions(output, "allPlots", suspendWhenHidden = FALSE, priority = 1)
+
+      # outs <- outputOptions(output)
+      # lapply(names(outs), function(name) {
+      #   outputOptions(output, name, suspendWhenHidden = FALSE)
+      # })
+      # output$dimension_display <- renderText(names(outsall))
 })

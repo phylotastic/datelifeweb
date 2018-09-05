@@ -1,10 +1,10 @@
 shinyUI(fluidPage(
-  # work around textAreaInput not spanning 100% of webpage when width = 100%
   tags$style(HTML("
     .shiny-input-container:not(.shiny-input-container-inline) {
     width: 100%;
   }")),
   tags$head(includeScript("google-analytics.js")),
+  # tags$head(tags$style(".rightAlign{display: flex; justify-content: center;}")),
   # https://stackoverflow.com/questions/36995142/get-the-size-of-the-window-in-shiny
   tags$head(tags$script('var dimension = [0, 0];
     $(document).on("shiny:connected", function(e) {
@@ -17,9 +17,9 @@ shinyUI(fluidPage(
         dimension[1] = window.innerHeight;
         Shiny.onInputChange("dimension", dimension);
     });')),
-  verbatimTextOutput("dimension_display"),
+  # verbatimTextOutput("dimension_display"),
   h1('DateLife Query'),
-  # textInput does not allow controlling height of box, use textAreaInput instead
+  # textInput does not allow controlling height of box, using textAreaInput instead
   textAreaInput('taxa', "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format, make sure to end with a semicolon)",
   "Rhea americana, Pterocnemia pennata, Struthio camelus", width = text_width, height = "auto"),
   # submitButton(text = " Refresh DateLife"),  # is not recommended by RStudio devs anymore. It does what I want, but has a weird behaviour.
@@ -27,25 +27,18 @@ shinyUI(fluidPage(
    'Show all studies. Includes studies with a subset of desired taxa, perhaps resulting in underestimate of maximum age',
    TRUE, width = text_width),
    checkboxInput('highertaxon', 'Search species within higher taxa. Several higher taxa can be searched at a time, comma separated',
-   TRUE, width = text_width),
-   checkboxInput('usetnrs', 'Use name resolution to deal with changes in taxonomy or misspellings (slows run considerably)',
    FALSE, width = text_width),
+   checkboxInput('usetnrs', 'Use name resolution to deal with changes in taxonomy or misspellings (slows run considerably)',
+   TRUE, width = text_width),
    checkboxInput('approximatematch', 'Use approximate matching for name resolution (can handle mismatches, but makes runs MUCH slower)',
    FALSE, width = text_width),
-   fluidRow(
-     column(2,
-       br(),
+   div(style="display:flex; justify-content: center",
        actionButton(inputId = 'refresh', label = ' Refresh DateLife',
          class = "btn btn-primary", #icon = icon("paper-plane"), #"search" is a magnifier, "paper-plane" is also cool, maybe for submit or send.
          # style="color: #fff; background-color: #337ab7; border-color: #2e6da4"), #color: is for letters
-         style = "color: #fff; background-color: #3399ff")
-      ),
-      column(2,
-        textInput(inputId = 'plotwidth', label = '  Chronogram Width', value = 100,
-        width = "50%", placeholder = "a number"), offset = 0
-      )
-   ),
-   br(),
+         style = "color: #fff; background-color: #3399ff")), #class = 'rightAlign'),
+      # style="float:center"),
+   br(), br(),
 
    h1("DateLife Results"), br(),
    tabsetPanel(type = "tabs",
