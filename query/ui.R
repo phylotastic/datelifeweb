@@ -55,10 +55,10 @@ shinyUI(fluidPage(
       tabPanel(h4("Summary trees"), br(),
          h2("Plot of tree from median ages"),
          p("Note that if partial matching is set up, branch lengths might not result in an ultrametric tree (since different trees may affect each edge)"),
-         shinycssloaders::withSpinner(ui_element = plotOutput("medianPlot", width = "auto", height = "auto"), type = 4),
+         shinycssloaders::withSpinner(ui_element = plotOutput("medianPlot", width = "100%", height = "auto"), type = 4),
          br(), br(),
          h2("Plot of tree from supertree method (sdm)"), p(" "),
-         shinycssloaders::withSpinner(ui_element = plotOutput("sdmPlot", width = "auto", height = "auto"), type = 4),
+         shinycssloaders::withSpinner(ui_element = plotOutput("sdmPlot", width = "25%", height = "auto"), type = 4),
          br()
       ),
       tabPanel(h4("All source trees"), br(),
