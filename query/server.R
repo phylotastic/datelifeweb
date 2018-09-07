@@ -12,35 +12,11 @@ shinyServer(function(input, output, session) {
                           input_highertaxon = isolate(input$highertaxon) #, input_dim1 = NULL #, redraw = FALSE
                           )
 
-      # from https://stackoverflow.com/questions/31051133/how-do-i-make-sure-that-a-shiny-reactive-plot-only-changes-once-all-other-reacti
-      # observe({
-      #     invalidateLater(1500, session)
-      #     rv$input_dim1 <- input$dimension[1]
-      #     if(rv$redraw){
-      #
-      #     }
-      #     rv$redraw <- FALSE
-      # })
-
-
-      # debounce(r = observe({
-      #     rv$input_dim1 <- input$dimension[1]
-      #   }), millis = 1000)
-
-      # wait one second after modifying window to update plot width value
       tree_plot_wid <- reactive({
         input$dimension[1] * 0.97
       })
 
       tree_plot_wid_d <- tree_plot_wid %>% debounce(1000)  # requires stringr
-      # tree_plot_wid_t <- tree_plot_wid %>% throttle(1000)  # requires stringr
-
-      # slightly slower:
-      # tree_plot_wid <- debounce(r = reactive({
-      #   input$dimension[1] * 0.95
-      # }), 1000)
-
-      # rv$input_dim1 <- isolate(tree_plot_wid())
 
       observeEvent(input$refresh, {
           query <- parseQueryString(session$clientData$url_search)
@@ -62,7 +38,6 @@ shinyServer(function(input, output, session) {
           rv$input_usetnrs <- input$usetnrs
           rv$input_approximatematch <- input$approximatematch
           rv$input_highertaxon <- input$highertaxon
-          rv$input_dim1 <- input$dimension[1] * 0.97
       })
 
       get.filtered.results <- reactive({get_datelife_result(input = rv$input_taxa,  #input$taxa,
@@ -218,7 +193,7 @@ shinyServer(function(input, output, session) {
           # expression evaluation.
               local({
                    my_i <- i  # this is important, otherwise the i is overwritten (always 1)
-                   plotname <- paste("plot", my_i, sep="")
+                   plotname <- paste0("plot", my_i)
                    plottitlename <- paste0("plot_title", my_i)
                    output[[plottitlename]] <- renderText({
                      names(get.all.trees())[my_i]
@@ -247,6 +222,7 @@ shinyServer(function(input, output, session) {
                    }, width = function() {
                         tree_plot_wid_d() #
                    })
+                   outputOptions(output, plotname, suspendWhenHidden = FALSE, priority = 10)
               })
           }
           do.call(tagList, plot_output_list)
@@ -280,14 +256,14 @@ shinyServer(function(input, output, session) {
               summary_format = "citations")), file = file)
           }
       )
-      outputOptions(output, "medianPlot", suspendWhenHidden = FALSE, priority = 3)
-      outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE, priority = 4)
-      outputOptions(output, "densiTreePlotAll", suspendWhenHidden = FALSE, priority = 2)
-      outputOptions(output, "allPlots", suspendWhenHidden = FALSE, priority = 1)
+      outputOptions(output, "medianPlot", suspendWhenHidden = FALSE, priority = 8)
+      outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE, priority = 7)
+      outputOptions(output, "densiTreePlotAll", suspendWhenHidden = FALSE, priority = 9)
+      outputOptions(output, "allPlots", suspendWhenHidden = FALSE, priority = 10)
 
+      #in case we do not want priorities:
       # outs <- outputOptions(output)
       # lapply(names(outs), function(name) {
       #   outputOptions(output, name, suspendWhenHidden = FALSE)
       # })
-      # output$dimension_display <- renderText(names(outsall))
 })

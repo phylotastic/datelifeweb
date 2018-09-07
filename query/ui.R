@@ -20,17 +20,17 @@ shinyUI(fluidPage(
   # verbatimTextOutput("dimension_display"),
   h1('DateLife Query'),
   # textInput does not allow controlling height of box, using textAreaInput instead
-  textAreaInput('taxa', "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format, make sure to end with a semicolon)",
+  textAreaInput('taxa', "Taxa (comma delimited; spaces or underscores in binomials are ok) or a Tree (Newick format; make sure to end with a semicolon)",
   "Rhea americana, Pterocnemia pennata, Struthio camelus", width = text_width, height = "auto"),
   # submitButton(text = " Refresh DateLife"),  # is not recommended by RStudio devs anymore. It does what I want, but has a weird behaviour.
    checkboxInput('partial',
    'Show all studies. Includes studies with a subset of desired taxa, perhaps resulting in underestimate of maximum age',
    TRUE, width = text_width),
    checkboxInput('highertaxon', 'Search species within higher taxa. Several higher taxa can be searched at a time, comma separated',
-   FALSE, width = text_width),
-   checkboxInput('usetnrs', 'Use name resolution to deal with changes in taxonomy or misspellings (slows run considerably)',
    TRUE, width = text_width),
-   checkboxInput('approximatematch', 'Use approximate matching for name resolution (can handle mismatches, but makes runs MUCH slower)',
+   checkboxInput('usetnrs', 'Use name resolution to deal with changes in taxonomy or misspellings',
+   TRUE, width = text_width),
+   checkboxInput('approximatematch', 'Use approximate matching for name resolution (can handle mismatches; slows run considerably)',
    FALSE, width = text_width),
    div(style="display:flex; justify-content: center",
        actionButton(inputId = 'refresh', label = ' Refresh DateLife',
@@ -74,7 +74,7 @@ shinyUI(fluidPage(
       )
    ),
    br(), #p("Powered by DateLife version 1")  #could try with tags$footer
-   tags$footer("DateLife 2018", align = "center", style = "
+   tags$footer("DateLife 2018. NSF grant 1458603. University of Tennessee, Knoxville. Open Tree of Life.", align = "center", style = "
             # position:absolute;
             bottom:0;
             width:100%;
