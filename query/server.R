@@ -222,7 +222,7 @@ shinyServer(function(input, output, session) {
                    }, width = function() {
                         tree_plot_wid_d() #
                    })
-                   outputOptions(output, plotname, suspendWhenHidden = FALSE, priority = 10)
+                   outputOptions(output, plotname, suspendWhenHidden = FALSE, priority = 7)
               })
           }
           do.call(tagList, plot_output_list)
@@ -256,10 +256,10 @@ shinyServer(function(input, output, session) {
               summary_format = "citations")), file = file)
           }
       )
-      outputOptions(output, "medianPlot", suspendWhenHidden = FALSE, priority = 8)
-      outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE, priority = 7)
-      outputOptions(output, "densiTreePlotAll", suspendWhenHidden = FALSE, priority = 9)
-      outputOptions(output, "allPlots", suspendWhenHidden = FALSE, priority = 10)
+      outputOptions(output, "medianPlot", suspendWhenHidden = FALSE, priority = 10)
+      outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE, priority = 9)
+      outputOptions(output, "densiTreePlotAll", suspendWhenHidden = FALSE, priority = 8)
+      outputOptions(output, "allPlots", suspendWhenHidden = FALSE, priority = 7)
 
       #in case we do not want priorities:
       # outs <- outputOptions(output)
