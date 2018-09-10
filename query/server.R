@@ -256,8 +256,8 @@ shinyServer(function(input, output, session) {
               summary_format = "citations")), file = file)
           }
       )
-      outputOptions(output, "medianPlot", suspendWhenHidden = FALSE, priority = 10)
-      outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE, priority = 9)
+      outputOptions(output, "medianPlot", suspendWhenHidden = FALSE, priority = 20)
+      outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE, priority = 19)
       outputOptions(output, "densiTreePlotAll", suspendWhenHidden = FALSE, priority = 8)
       outputOptions(output, "allPlots", suspendWhenHidden = FALSE, priority = 7)
 

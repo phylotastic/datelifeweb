@@ -74,14 +74,16 @@ shinyUI(fluidPage(
       )
    ),
    br(), #p("Powered by DateLife version 1")  #could try with tags$footer
-   tags$footer("DateLife 2018. NSF grant 1458603. University of Tennessee, Knoxville. Open Tree of Life.", align = "center", style = "
-            # position:absolute;
-            bottom:0;
-            width:100%;
-            height:35px;   /* Height of the footer */
-            color: gray;
-            padding: 7px;
-            background-color: #4975B198;
-            z-index: 1000;")
-
+   tags$footer(tags$p("DateLife 2018. NSF grant ABI-1458603."),
+               tags$p("Also supported by the University of Tennessee, Knoxville and the NSF grant DBI-0905606 to the National Evolutionary Synthesis Center (NESCent)."),
+               tags$p("Trees come from contributors to the Open Tree of Life. Many thanks!"),
+               align = "center", style = "
+                # position:absolute;
+                bottom:0;
+                width:100%;
+                height:120px;   /* Height of the footer */
+                color: gray;
+                padding: 7px;
+                background-color: #4975B198;
+                z-index: 1000;")
 ))
