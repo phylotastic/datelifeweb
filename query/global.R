@@ -6,6 +6,10 @@ library(phangorn)
 library(ape)
 library(phyloch)
 library(stringr)
+library(promises)
+library(future)
+plan(multiprocess)
+
 options(shiny.sanitize.errors = FALSE)
 # devtools::load_all("~/Desktop/datelife")
 text_width <- "100%"

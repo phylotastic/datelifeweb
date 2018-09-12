@@ -1,4 +1,3 @@
-
 # from http://stackoverflow.com/questions/32872222/how-do-you-pass-parameters-to-a-shiny-app-via-url
 # we actually do not need that, the input will be automatically updated
 # example: 127.0.0.1:5767/?symbol=BBB,AAA,CCC,DDD&date_start=2005-01-02&period_select=2&smaLen=153&usema=1
@@ -47,19 +46,37 @@ shinyServer(function(input, output, session) {
       })
 
       summ.table <- reactive({
-         datelife::summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "data_frame", partial = rv$input_partial)
+        x <- get.filtered.results()
+        part <- rv$input_partial
+        future({
+           datelife::summarize_datelife_result(datelife_result = x,
+             summary_format = "data_frame", partial = part)
+        })
       })
 
+      output$age <- renderTable({
+          summ.table()
+      })
+      outputOptions(output, "age", suspendWhenHidden = FALSE, priority = 10)
+
       get.median.tree <- reactive({
-         temp.tree <- summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "phylo_median")
-         temp.tree$root.time <- max(ape::branching.times(temp.tree))
-         temp.tree
+          x <- get.filtered.results()
+        # future({
+
+          temp.tree <- summarize_datelife_result(datelife_result = x, summary_format = "phylo_median")
+          temp.tree$root.time <- max(ape::branching.times(temp.tree))
+          temp.tree
+
+        # })
       })
 
       get.sdm.tree <- reactive({
-         temp.tree <- summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "phylo_sdm")
-         temp.tree$root.time <- max(ape::branching.times(temp.tree))
-         temp.tree
+         x <- get.filtered.results()
+         # future({
+           temp.tree <- summarize_datelife_result(datelife_result = x, summary_format = "phylo_sdm")
+           temp.tree$root.time <- max(ape::branching.times(temp.tree))
+           temp.tree
+         # })
       })
 
       get.all.trees <- reactive({
@@ -88,6 +105,10 @@ shinyServer(function(input, output, session) {
       })
 
       max.tip.label <- reactive({
+        # promise_all(gmt = get.median.tree(), gst = get.sdm.tree(), gat = get.all.trees()) %...>%
+        # with({
+        #
+        #   })
         tip.label.length <- unique(unlist(sapply(
           c(list(get.median.tree()), list(get.sdm.tree()), get.all.trees()),
           "[", "tip.label")))
@@ -95,9 +116,6 @@ shinyServer(function(input, output, session) {
         nchar(tip.label.length[ind])  # use strWidth?
       })
 
-      output$age <- renderTable({
-          summ.table()
-      })
 
       output$medianPlot <- renderPlot({
           mar.tips <- max.tip.label() * 0.6  # to control the margin on the side of tip labels
@@ -114,13 +132,14 @@ shinyServer(function(input, output, session) {
            gridty = "twodash")
           mtext("Time (MYA)", cex = 1.5, side = 1, font = 2, line = oma1_f(median.tree) - 1, outer = TRUE)
           }, height = function(){
-               tree <- get.median.tree()
-               hei <- tree_plot_height(tree)
-               hei
+               get.median.tree() %>%
+               tree_plot_height()
+
           }, width = function() {
                tree_plot_wid_d() #
           }
       )
+      outputOptions(output, "medianPlot", suspendWhenHidden = FALSE, priority = 9)
 
       output$sdmPlot <- renderPlot({
           mar.tips <- max.tip.label() * 0.6
@@ -146,6 +165,7 @@ shinyServer(function(input, output, session) {
                tree_plot_wid_d() #
           }
        )
+       outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE, priority = 8)
 
       output$densiTreePlotAll <- renderPlot({
           all.trees <- get.all.trees()
@@ -171,6 +191,7 @@ shinyServer(function(input, output, session) {
                tree_plot_wid_d() #
           }
       )
+      outputOptions(output, "densiTreePlotAll", suspendWhenHidden = FALSE, priority = 7)
 
       output$allPlots <- renderUI({
           plot_output_list <- vector(mode = "list")
@@ -222,11 +243,12 @@ shinyServer(function(input, output, session) {
                    }, width = function() {
                         tree_plot_wid_d() #
                    })
-                   outputOptions(output, plotname, suspendWhenHidden = FALSE, priority = 7)
+                   # outputOptions(output, plotname, suspendWhenHidden = FALSE, priority = 5-my_i)
               })
           }
           do.call(tagList, plot_output_list)
       })
+      outputOptions(output, "allPlots", suspendWhenHidden = FALSE, priority = 5)
 
       output$downloadCSV <- downloadHandler(
           filename = "DatelifeTable.csv",
@@ -256,10 +278,6 @@ shinyServer(function(input, output, session) {
               summary_format = "citations")), file = file)
           }
       )
-      outputOptions(output, "medianPlot", suspendWhenHidden = FALSE, priority = 20)
-      outputOptions(output, "sdmPlot", suspendWhenHidden = FALSE, priority = 19)
-      outputOptions(output, "densiTreePlotAll", suspendWhenHidden = FALSE, priority = 8)
-      outputOptions(output, "allPlots", suspendWhenHidden = FALSE, priority = 7)
 
       #in case we do not want priorities:
       # outs <- outputOptions(output)
