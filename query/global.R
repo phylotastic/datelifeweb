@@ -34,6 +34,7 @@ oma1_f <- function(tree){
   }
   oma1
 }
+# the following gets height in pixels
 tree_plot_height <- function(tree){
   tipnum <- ape::Ntip(tree)
   if(tipnum > 10){
