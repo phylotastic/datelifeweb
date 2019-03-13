@@ -1,6 +1,6 @@
 library(shiny)
 library(shinycssloaders)
-devtools::install("~/Desktop/datelife")
+# devtools::install("~/Desktop/datelife")
 library(datelife)
 library(strap)
 library(phangorn)
