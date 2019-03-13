@@ -1,5 +1,6 @@
 library(shiny)
 library(shinycssloaders)
+devtools::install("~/Desktop/datelife")
 library(datelife)
 library(strap)
 library(phangorn)
@@ -11,7 +12,6 @@ library(future)
 plan(multiprocess)
 
 options(shiny.sanitize.errors = FALSE)
-# devtools::load_all("~/Desktop/datelife")
 text_width <- "100%"
 utils::data(opentree_chronograms)
 utils::data("strat2012", package = "phyloch")

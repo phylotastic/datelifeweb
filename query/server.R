@@ -39,7 +39,8 @@ shinyServer(function(input, output, session) {
           rv$input_highertaxon <- input$highertaxon
       })
 
-      get.filtered.results <- reactive({get_datelife_result(input = rv$input_taxa,  #input$taxa,
+      get.filtered.results <- reactive({
+         get_datelife_result(input = rv$input_taxa,  #input$taxa,
          partial = rv$input_partial, use_tnrs = rv$input_usetnrs,
          approximate_match = rv$input_approximatematch,
          get_spp_from_taxon = rv$input_highertaxon)
