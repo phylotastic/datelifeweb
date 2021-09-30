@@ -29,17 +29,17 @@ tree_plot_height <- function(tree){
 }
 
 reactive({
-    rv$summ.table <- summarize_datelife_result(datelife_result = rv$get.filtered.results,
+    rv$summ.table <- summarize_datelife_result(datelife_result = rv$get_filtered_results,
     summary_format = "data_frame")
-    rv$get.median.tree <- summarize_datelife_result(datelife_result = rv$get.filtered.results,
+    rv$get.median.tree <- summarize_datelife_result(datelife_result = rv$get_filtered_results,
         summary_format = "phylo_median")
     rv$get.median.tree$root.time <- max(ape::branching.times(rv$get.median.tree))
 
-    rv$get.sdm.tree <- summarize_datelife_result(datelife_result = rv$get.filtered.results,
+    rv$get.sdm.tree <- summarize_datelife_result(datelife_result = rv$get_filtered_results,
         summary_format = "phylo_sdm")
     rv$get.sdm.tree$root.time <- max(ape::branching.times(rv$get.sdm.tree))
 
-    noisy.trees <- summarize_datelife_result(datelife_result = rv$get.filtered.results,
+    noisy.trees <- summarize_datelife_result(datelife_result = rv$get_filtered_results,
         summary_format = "phylo_all")
     tree.vector <- c()
     tree.vector.names <- c()

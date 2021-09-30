@@ -39,15 +39,15 @@ shinyServer(function(input, output, session) {
           rv$input_highertaxon <- input$highertaxon
       })
 
-      get.filtered.results <- reactive({
-         get_datelife_result(input = rv$input_taxa,  #input$taxa,
+      get_filtered_results <- reactive({
+         datelife::get_datelife_result(input = rv$input_taxa,  #input$taxa,
          partial = rv$input_partial, use_tnrs = rv$input_usetnrs,
          approximate_match = rv$input_approximatematch,
          get_spp_from_taxon = rv$input_highertaxon)
       })
 
       summ.table <- reactive({
-        x <- get.filtered.results()
+        x <- get_filtered_results()
         part <- rv$input_partial
         future({
            datelife::summarize_datelife_result(datelife_result = x,
@@ -61,7 +61,7 @@ shinyServer(function(input, output, session) {
       outputOptions(output, "age", suspendWhenHidden = FALSE, priority = 10)
 
       get.median.tree <- reactive({
-          x <- get.filtered.results()
+          x <- get_filtered_results()
         # future({
 
           temp.tree <- summarize_datelife_result(datelife_result = x, summary_format = "phylo_median")
@@ -72,7 +72,7 @@ shinyServer(function(input, output, session) {
       })
 
       get.sdm.tree <- reactive({
-         x <- get.filtered.results()
+         x <- get_filtered_results()
          # future({
            temp.tree <- summarize_datelife_result(datelife_result = x, summary_format = "phylo_sdm")
            temp.tree$root.time <- max(ape::branching.times(temp.tree))
@@ -81,7 +81,7 @@ shinyServer(function(input, output, session) {
       })
 
       get.all.trees <- reactive({
-        noisy.trees <- summarize_datelife_result(datelife_result = get.filtered.results(), summary_format = "phylo_all")
+        noisy.trees <- summarize_datelife_result(datelife_result = get_filtered_results(), summary_format = "phylo_all")
         tree.vector <- c()
         tree.vector.names <- c()
         for (i in sequence(length(noisy.trees))) {
@@ -100,7 +100,7 @@ shinyServer(function(input, output, session) {
       })
 
       max.tree.age <- reactive({
-        max.age <- round(max(summarize_datelife_result(datelife_result = get.filtered.results(),
+        max.age <- round(max(summarize_datelife_result(datelife_result = get_filtered_results(),
             summary_format = "mrca")) + 5, digits = -1)
         max.age
       })
@@ -275,7 +275,7 @@ shinyServer(function(input, output, session) {
       output$downloadCitations <- downloadHandler(
           filename = "AllTreesCitations.txt",
           content = function(file) {
-              write(unique(summarize_datelife_result(datelife_result = get.filtered.results(),
+              write(unique(summarize_datelife_result(datelife_result = get_filtered_results(),
               summary_format = "citations")), file = file)
           }
       )

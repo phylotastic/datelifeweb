@@ -1,6 +1,6 @@
 library(shiny)
 library(shinycssloaders)
-# devtools::install("~/Desktop/datelife")
+#devtools::install_github("phylotastic/datelife", ref = "datelife-plots")
 library(datelife)
 library(strap)
 library(phangorn)
@@ -9,7 +9,8 @@ library(phyloch)
 library(stringr)
 library(promises)
 library(future)
-plan(multiprocess)
+plan(multisession)
+library(datelifeplot)
 
 options(shiny.sanitize.errors = FALSE)
 text_width <- "100%"
