@@ -74,10 +74,10 @@ shinyUI(fluidPage(
       )
    ),
    br(), #p("Powered by DateLife version 1")  #could try with tags$footer
-   tags$footer(tags$p("DateLife 2018. NSF grant ABI-1458603."),
+   tags$footer(tags$p("DateLife 2021. NSF grant ABI-1458603."),
                tags$p("Also supported by the University of Tennessee, Knoxville and the NSF grant DBI-0905606 to the National Evolutionary Synthesis Center (NESCent)."),
-               tags$p(paste0("Deployed using version ", packageVersion("datelife"), " of datelife R package.")), 
-               tags$p("Trees come from contributors to the Open Tree of Life. Many thanks!"),
+               tags$p(paste0("Deployed using datelife version ", packageVersion("datelife"))), 
+               tags$p("Chronograms come from contributors to the Open Tree of Life. Many thanks!"),
                align = "center", style = "
                 # position:absolute;
                 bottom:0;
