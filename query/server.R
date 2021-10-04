@@ -4,19 +4,20 @@
 
 
 shinyServer(function(input, output, session) {
-      rv <- reactiveValues(input_taxa = isolate(input$taxa),
-                          input_partial = isolate(input$partial),
-                          input_usetnrs = isolate(input$usetnrs),
-                          input_approximatematch = isolate(input$approximatematch),
-                          input_highertaxon = isolate(input$highertaxon) #, input_dim1 = NULL #, redraw = FALSE
-                          )
+      rv <- reactiveValues(input_taxa = shiny::isolate(input$taxa),
+                          input_partial = shiny::isolate(input$partial),
+                          input_usetnrs = shiny::isolate(input$usetnrs),
+                          input_approximatematch = shiny::isolate(input$approximatematch),
+                          input_highertaxon = shiny::isolate(input$highertaxon), #, input_dim1 = NULL #, redraw = FALSE
+)
 
-      tree_plot_wid <- reactive({
+      tree_plot_wid <- shiny::reactive({
         input$dimension[1] * 0.97
       })
 
-      tree_plot_wid_d <- tree_plot_wid %>% debounce(1000)  # requires stringr
+      tree_plot_wid_d <- tree_plot_wid %>% shiny::debounce(1000)  # requires stringr
 
+      # observer set for refresh button:
       observeEvent(input$refresh, {
           query <- parseQueryString(session$clientData$url_search)
 
@@ -38,7 +39,6 @@ shinyServer(function(input, output, session) {
           rv$input_approximatematch <- input$approximatematch
           rv$input_highertaxon <- input$highertaxon
       })
-
       get_filtered_results <- reactive({
          datelife::get_datelife_result(input = rv$input_taxa,  #input$taxa,
          partial = rv$input_partial, use_tnrs = rv$input_usetnrs,
