@@ -12,9 +12,10 @@ library(future)
 plan(multisession)
 library(datelifeplot)
 
+
 options(shiny.sanitize.errors = FALSE)
 text_width <- "100%"
-utils::data(opentree_chronograms)
+utils::data(opentree_chronograms, package = "datelife")
 utils::data("strat2012", package = "phyloch")
 # source("allplots.R")
 oma1_f <- function(tree){

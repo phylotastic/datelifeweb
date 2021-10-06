@@ -8,8 +8,8 @@ shinyServer(function(input, output, session) {
                           input_partial = shiny::isolate(input$partial),
                           input_usetnrs = shiny::isolate(input$usetnrs),
                           input_approximatematch = shiny::isolate(input$approximatematch),
-                          input_highertaxon = shiny::isolate(input$highertaxon), #, input_dim1 = NULL #, redraw = FALSE
-)
+                          input_highertaxon = shiny::isolate(input$highertaxon) #, input_dim1 = NULL #, redraw = FALSE
+      )
 
       tree_plot_wid <- shiny::reactive({
         input$dimension[1] * 0.97

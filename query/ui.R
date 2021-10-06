@@ -18,9 +18,9 @@ shinyUI(fluidPage(
         Shiny.onInputChange("dimension", dimension);
     });')),
   # verbatimTextOutput("dimension_display"),
-  h1('DateLife Query'),
+  h1('Query'),
   # textInput does not allow controlling height of box, using textAreaInput instead
-  textAreaInput('taxa', "Taxon names (comma delimited; spaces or underscores in binomials are ok),\n or a tree (in Newick format, woth taxon names as tip labels; make sure to end it with a semicolon).",
+  textAreaInput('taxa', "Taxon names (comma delimited; spaces or underscores in binomials are ok),\n or a tree (in Newick format, with taxon names as tip labels; make sure to end it with a semicolon).",
   "Rhea americana, Pterocnemia pennata, Struthio camelus", width = text_width, height = "auto"),
   # submitButton(text = " Refresh DateLife"),  # is not recommended by RStudio devs anymore. It does what I want, but has a weird behaviour.
    checkboxInput('partial',
@@ -40,7 +40,7 @@ shinyUI(fluidPage(
       # style="float:center"),
    br(), br(),
 
-   h1("DateLife Results"), br(),
+   h1("Results"), br(),
    tabsetPanel(type = "tabs",
       tabPanel(h4("Table of ages and sources"), br(),
         withSpinner(ui_element = tableOutput("age"), type = 4), br()
