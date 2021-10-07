@@ -46,10 +46,10 @@ reactive({
     for (i in sequence(length(noisy.trees))) {
       if(class(noisy.trees[[i]]) == "phylo") {
         if(length(tree.vector) > 0) {
-          tree.vector <- ape::c.phylo(tree.vector, noisy.trees[[i]])
+          tree.vector <- ape:::c.phylo(tree.vector, noisy.trees[[i]])
           tree.vector.names <- c(tree.vector.names, names(noisy.trees)[i])
         } else {
-          tree.vector <- ape::c.phylo(noisy.trees[[i]])
+          tree.vector <- ape:::c.phylo(noisy.trees[[i]])
           tree.vector.names <- names(noisy.trees)[i]
         }
       }
