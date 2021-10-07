@@ -1,0 +1,14 @@
+Package: datelifeweb
+Title: DateLife's Shiny Web Application
+Version: 0.2.0
+Authors@R:
+    person("Brian", "O'Meara", , "omeara.brian@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-0337-5997"))
+    person("Luna Luisa", "Sanchez Reyes", , "sanchez.reyes.luna@gmail.com", role = c("aut"),
+           comment = c(ORCID = "0000-0001-7668-2528"))
+Description: This package contains the functions and R shiny application to run DateLife as a web service.
+License: `use_gpl3_license()`
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
